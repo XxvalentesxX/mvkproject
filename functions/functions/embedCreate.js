@@ -58,8 +58,4 @@ function embedCreate(embedOptions) {
   return embed;
 }
 
-module.exports = {
-  embed: {
-    create: embedCreate
-  }
-};
+module.exports = embedCreate;
