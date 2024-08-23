@@ -1,13 +1,7 @@
-// loadSlashCommandsHandler.js
 const { Collection } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
-/**
- * Carga y registra todos los comandos slash desde una carpeta.
- * @param {string} folderPath - Ruta de la carpeta que contiene los comandos slash.
- * @param {Client} client - Instancia del cliente de Discord.
- */
 function loadSlashCommandsHandler(folderPath, client) {
   client.slashCommands = new Collection();
 
@@ -15,7 +9,7 @@ function loadSlashCommandsHandler(folderPath, client) {
 
   function loadFromDir(dir) {
     if (!fs.existsSync(dir)) {
-      console.error(`El directorio ${dir} no existe.`);
+      console.error(`Directory ${dir} does not exist.`);
       return;
     }
 
@@ -33,10 +27,10 @@ function loadSlashCommandsHandler(folderPath, client) {
 
           if (command.data && command.execute) {
             client.slashCommands.set(command.data.name, command);
-            console.log(`Comando slash cargado: ${command.data.name}`);
+            console.log(`Slash command loaded: ${command.data.name}`);
           }
         } catch (error) {
-          console.error(`Error al cargar el archivo ${filePath}:`, error);
+          console.error(`Error loading file ${filePath}:`, error);
         }
       }
     });
@@ -48,9 +42,9 @@ function loadSlashCommandsHandler(folderPath, client) {
     const commands = client.slashCommands.map(cmd => cmd.data);
     try {
       await client.application.commands.set(commands);
-      console.log('Comandos slash registrados correctamente.');
+      console.log('Slash commands successfully registered.');
     } catch (error) {
-      console.error('Error al registrar comandos slash:', error);
+      console.error('Error registering slash commands:', error);
     }
   });
 
@@ -63,8 +57,8 @@ function loadSlashCommandsHandler(folderPath, client) {
       try {
         await command.execute(interaction);
       } catch (error) {
-        console.error(`Error al manejar la interacción del comando slash ${commandName}:`, error);
-        await interaction.reply({ content: 'Hubo un error al ejecutar el comando.', ephemeral: true });
+        console.error(`Error handling interaction for slash command ${commandName}:`, error);
+        await interaction.reply({ content: 'There was an error executing the command.', ephemeral: true });
       }
     }
   });

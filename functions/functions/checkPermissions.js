@@ -66,7 +66,7 @@ async function checkUserPerms({ user, permissions, guild }) {
         return hasPermissions;
     } catch (error) {
         console.error("Error in checkUserPerms:", error);
-        return false; // Devolver false si ocurre algún error
+        return false;
     }
 }
 

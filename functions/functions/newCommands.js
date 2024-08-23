@@ -1,18 +1,10 @@
-// functions/newCommands.js
 const { Collection } = require('discord.js');
 
 const commands = new Collection();
 
-/**
- * Crea un nuevo comando y lo almacena en la colección.
- * @param {Object} commandData - Datos del comando.
- * @param {string} commandData.name - Nombre del comando.
- * @param {string} commandData.description - Descripción del comando.
- * @param {Function} commandData.code - Función a ejecutar cuando se llama el comando.
- */
 function newCommand({ name, description, code }) {
   if (!name || !description || !code) {
-    throw new Error('El comando debe tener un nombre, una descripción y un código.');
+    throw new Error('Command must have a name, description, and code.');
   }
 
   commands.set(name, { description, code });
@@ -30,7 +22,7 @@ async function handleCommand(message) {
     try {
       await command.code(message);
     } catch (error) {
-      console.error(`Error al ejecutar el comando ${commandName}:`, error);
+      console.error(`Error executing command ${commandName}:`, error);
     }
   }
 }

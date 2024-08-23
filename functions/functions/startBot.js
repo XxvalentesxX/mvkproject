@@ -35,7 +35,6 @@ function startBot(config) {
     client.prefix = prefix;
   }
 
-  // Añadir la función sendMessage al cliente
   client.sendMessage = function (options) {
     return sendMessage.call(this, options);
   };

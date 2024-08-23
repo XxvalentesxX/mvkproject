@@ -1,17 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
-// Ruta base para los archivos de variables
 const basePath = path.join(__dirname, '..', 'variables');
 
-// Función para crear directorios si no existen
 function createDirIfNotExists(dirPath) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
   }
 }
 
-// Crea directorios necesarios
 createDirIfNotExists(basePath);
 createDirIfNotExists(path.join(basePath, 'global', 'globaluser'));
 createDirIfNotExists(path.join(basePath, 'global'));
@@ -19,11 +16,10 @@ createDirIfNotExists(path.join(basePath, 'user'));
 createDirIfNotExists(path.join(basePath, 'server'));
 createDirIfNotExists(path.join(basePath, 'channel'));
 
-// Función para crear una variable
 function variableCreate({ name, value, type }) {
   const types = ['global', 'user', 'server', 'channel', 'global_user'];
   if (!types.includes(type)) {
-    throw new Error('Tipo inválido. Los tipos válidos son: global, user, server, channel, global_user.');
+    throw new Error('Invalid type. Valid types are: global, user, server, channel, global_user.');
   }
 
   let filePath;
@@ -40,7 +36,7 @@ function variableCreate({ name, value, type }) {
   }
 
   if (fs.existsSync(filePath)) {
-    throw new Error(`La variable ${name} ya existe.`);
+    throw new Error(`Variable ${name} already exists.`);
   }
 
   const variableData = {
@@ -50,14 +46,13 @@ function variableCreate({ name, value, type }) {
   };
 
   fs.writeFileSync(filePath, JSON.stringify(variableData, null, 2), 'utf8');
-  return 'Variable creada correctamente.';
+  return 'Variable created successfully.';
 }
 
-// Función para verificar si una variable existe
 function varExists({ name, type }) {
   const types = ['global', 'user', 'server', 'channel', 'global_user'];
   if (!types.includes(type)) {
-    throw new Error('Tipo inválido. Los tipos válidos son: global, user, server, channel, global_user.');
+    throw new Error('Invalid type. Valid types are: global, user, server, channel, global_user.');
   }
 
   let filePath;
@@ -76,11 +71,10 @@ function varExists({ name, type }) {
   return fs.existsSync(filePath);
 }
 
-// Funciones para establecer variables
 function setVar({ name, value, userID }) {
   const type = userID ? 'global_user' : 'global';
   if (!varExists({ name, type })) {
-    throw new Error(`La variable ${name} no existe. Crea la variable con variable.create antes de usar set.`);
+    throw new Error(`Variable ${name} does not exist. Create the variable with variableCreate before using setVar.`);
   }
 
   const filePath = path.join(basePath, 'global', userID ? 'globaluser' : '', `${name}.json`);
@@ -129,11 +123,10 @@ function setChannelVar({ name, value, channelID, serverID }) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
 }
 
-// Funciones para obtener variables
 function getVar({ name, userID }) {
   const type = userID ? 'global_user' : 'global';
   if (!varExists({ name, type })) {
-    throw new Error(`La variable ${name} no existe.`);
+    throw new Error(`Variable ${name} does not exist.`);
   }
 
   const filePath = path.join(basePath, 'global', userID ? 'globaluser' : '', `${name}.json`);
@@ -145,16 +138,16 @@ function getVar({ name, userID }) {
 function getUserVar({ name, userID, serverID }) {
   const filePath = path.join(basePath, 'user', `${userID || 'default'}.json`);
   if (!fs.existsSync(filePath)) {
-    throw new Error(`No se encontró el archivo de usuario ${userID || 'default'}.`);
+    throw new Error(`User file ${userID || 'default'} not found.`);
   }
 
   const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   if (!data[name]) {
-    throw new Error(`La variable ${name} no existe para el usuario ${userID || 'default'}.`);
+    throw new Error(`Variable ${name} does not exist for user ${userID || 'default'}.`);
   }
 
   if (serverID && data[name].serverID !== serverID) {
-    throw new Error(`La variable ${name} no pertenece al servidor ${serverID}.`);
+    throw new Error(`Variable ${name} does not belong to server ${serverID}.`);
   }
 
   return data[name].value;
@@ -163,12 +156,12 @@ function getUserVar({ name, userID, serverID }) {
 function getServerVar({ name, serverID }) {
   const filePath = path.join(basePath, 'server', `${serverID || 'default'}.json`);
   if (!fs.existsSync(filePath)) {
-    throw new Error(`No se encontró el archivo del servidor ${serverID || 'default'}.`);
+    throw new Error(`Server file ${serverID || 'default'} not found.`);
   }
 
   const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   if (!data[name]) {
-    throw new Error(`La variable ${name} no existe para el servidor ${serverID || 'default'}.`);
+    throw new Error(`Variable ${name} does not exist for server ${serverID || 'default'}.`);
   }
 
   return data[name];
@@ -177,22 +170,21 @@ function getServerVar({ name, serverID }) {
 function getChannelVar({ name, channelID, serverID }) {
   const filePath = path.join(basePath, 'channel', `${channelID || 'default'}.json`);
   if (!fs.existsSync(filePath)) {
-    throw new Error(`No se encontró el archivo del canal ${channelID || 'default'}.`);
+    throw new Error(`Channel file ${channelID || 'default'} not found.`);
   }
 
   const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   if (!data[name]) {
-    throw new Error(`La variable ${name} no existe para el canal ${channelID || 'default'}.`);
+    throw new Error(`Variable ${name} does not exist for channel ${channelID || 'default'}.`);
   }
 
   if (serverID && data[name].serverID !== serverID) {
-    throw new Error(`La variable ${name} no pertenece al servidor ${serverID}.`);
+    throw new Error(`Variable ${name} does not belong to server ${serverID}.`);
   }
 
   return data[name].value;
 }
 
-// Exporta las funciones
 module.exports = {
   variableCreate,
   varExists,

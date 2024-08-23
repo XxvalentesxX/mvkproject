@@ -1,30 +1,29 @@
 const { EmbedBuilder } = require('discord.js');
 
 function embedCreate(embedOptions) {
-  // Verificación de campos vacíos y URLs
   const { description, author, authorIcon, title, titleUrl, thumbnail, footer, footerIcon, image, addfields } = embedOptions;
 
   if (!description && !author && !title) {
-    throw new Error('El campo description es obligatorio si no se proporciona ningún otro campo.');
+    throw new Error('The description field is required if no other field is provided.');
   }
 
   if (author === '') {
-    throw new Error('El campo author no puede estar vacío.');
+    throw new Error('The author field cannot be empty.');
   }
 
   if (title === '') {
-    throw new Error('El campo title no puede estar vacío.');
+    throw new Error('The title field cannot be empty.');
   }
 
   if (footer === '') {
-    throw new Error('El campo footer no puede estar vacío.');
+    throw new Error('The footer field cannot be empty.');
   }
 
   const validateUrl = (url, fieldName) => {
     try {
       new URL(url);
     } catch {
-      throw new Error(`La URL proporcionada en ${fieldName} es inválida.`);
+      throw new Error(`The URL provided in ${fieldName} is invalid.`);
     }
   };
 
@@ -34,7 +33,6 @@ function embedCreate(embedOptions) {
   if (footerIcon) validateUrl(footerIcon, 'footerIcon');
   if (image) validateUrl(image, 'image');
 
-  // Crear el embed
   const embed = new EmbedBuilder();
 
   if (description) embed.setDescription(description);
@@ -47,12 +45,11 @@ function embedCreate(embedOptions) {
   if (embedOptions.color) embed.setColor(embedOptions.color);
   if (embedOptions.timestamp) embed.setTimestamp();
 
-  // Agregar los fields
   if (Array.isArray(addfields) && addfields.length > 0) {
     addfields.forEach(field => {
       const { name, text, inline } = field;
       if (!name || !text) {
-        throw new Error('El nombre y texto de un field no pueden estar vacíos.');
+        throw new Error('The name and text of a field cannot be empty.');
       }
       embed.addFields({ name, value: text, inline: !!inline });
     });

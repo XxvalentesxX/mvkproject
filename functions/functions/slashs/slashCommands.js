@@ -50,7 +50,7 @@ function newSlashCommand({ name, description, options = [], code, subCommands = 
         );
         break;
       default:
-        throw new Error(`Tipo de opción no soportado: ${opt.type}`);
+        throw new Error(`Unsupported option type: ${opt.type}`);
     }
   });
 
@@ -103,9 +103,8 @@ function newSlashCommand({ name, description, options = [], code, subCommands = 
                 .setRequired(opt.required || false)
             );
             break;
-          // Agrega otros tipos de opciones según sea necesario
           default:
-            throw new Error(`Tipo de opción no soportado en subcomando: ${opt.type}`);
+            throw new Error(`Unsupported option type in subcommand: ${opt.type}`);
         }
       });
 
@@ -116,8 +115,13 @@ function newSlashCommand({ name, description, options = [], code, subCommands = 
   return {
     data: commandBuilder.toJSON(),
     execute: async (interaction) => {
-      if (interaction.isCommand()) {
-        await code(interaction);
+      try {
+        if (interaction.isCommand() && interaction.commandName === name) {
+          await code(interaction);
+        }
+      } catch (error) {
+        console.error(`Error executing command ${name}:`, error);
+        await interaction.reply({ content: 'There was an error executing the command.', ephemeral: true });
       }
     }
   };

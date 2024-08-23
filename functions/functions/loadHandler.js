@@ -1,19 +1,13 @@
-// functions/loadHandler.js
 const fs = require('fs');
 const path = require('path');
 const { newCommand, handleCommand } = require('./newCommands'); 
 
-/**
- * Carga todos los comandos desde una carpeta y sus subcarpetas.
- * @param {string} folderPath - Ruta de la carpeta que contiene los comandos.
- * @param {Client} client - Instancia del cliente de Discord.
- */
 function loadHandler(folderPath, client) {
   const absolutePath = path.resolve(folderPath);
 
   function loadFromDir(dir) {
     if (!fs.existsSync(dir)) {
-      console.error(`El directorio ${dir} no existe.`);
+      console.error(`The directory ${dir} does not exist.`);
       return;
     }
 
@@ -31,10 +25,10 @@ function loadHandler(folderPath, client) {
 
           if (command && typeof command === 'object' && command.name) {
             newCommand(command);
-            console.log(`Comando cargado: ${command.name}`);
+            console.log(`Command loaded: ${command.name}`);
           }
         } catch (error) {
-          console.error(`Error al cargar el archivo ${filePath}:`, error);
+          console.error(`Error loading file ${filePath}:`, error);
         }
       }
     });
@@ -48,7 +42,7 @@ function loadHandler(folderPath, client) {
     try {
       await handleCommand(message);
     } catch (error) {
-      console.error('Error al manejar el comando:', error);
+      console.error('Error handling command:', error);
     }
   });
 }
