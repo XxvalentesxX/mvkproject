@@ -14,7 +14,9 @@ const loadSlashCommandsHandler = require("./functions/functions/slashs/loadSlash
 const { newSlashCommand, subCommand } = require("./functions/functions/slashs/slashCommands");
 const banUser = require('./functions/functions/ban');
 const { checkUserPerms } = require("./functions/functions/checkPermissions");
-const setActivity = require('./functions/functions/setActivity')
+const setActivity = require('./functions/functions/setActivity');
+const alwaysReply = require("./functions/events/alwaysReply");
+const checkContains = require("./functions/functions/checkContains");
 
 module.exports = {
     newCommand,
@@ -51,5 +53,7 @@ module.exports = {
     banUser,
     sendMessage,
     checkUserPerms,
-    setActivity
+    setActivity,
+    alwaysReply,
+    checkContains
 };
