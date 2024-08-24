@@ -38,6 +38,7 @@ function startBot(config) {
   client.sendMessage = function (options) {
     return sendMessage.call(this, options);
   };
+
   client.banUser = (options) => banUser(options);
   client.login(token);
 

@@ -1,14 +1,12 @@
-const { Client, EmbedBuilder } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
-async function sendMessage(client, { channel: channelID, embeds, message, ephemeral = {} }) {
-  if (!embeds && !message) {
-    throw new Error('You must provide one of the fields: "embeds" or "message".');
+async function sendMessage({ channel, embeds, message, ephemeral = {} }) {
+  if (!channel) {
+    throw new Error('Channel must be provided.');
   }
 
-  const channel = client.channels.cache.get(channelID);
-
-  if (!channel) {
-    throw new Error(`Channel with ID: ${channelID} not found.`);
+  if (typeof channel.send !== 'function') {
+    throw new Error('The provided channel is not a valid Discord channel.');
   }
 
   if (ephemeral.message || (ephemeral.embeds && Object.values(ephemeral.embeds).includes(true))) {
@@ -37,6 +35,4 @@ async function sendMessage(client, { channel: channelID, embeds, message, epheme
   }
 }
 
-module.exports = {
-  sendMessage
-};
+module.exports = sendMessage;
