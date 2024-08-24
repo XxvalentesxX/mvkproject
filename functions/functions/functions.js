@@ -34,7 +34,7 @@ function getMessageContent(message, index) {
 }
 
 function stop() {
-  throw new Error('Execution stopped by stop().');
+  return;
 }
 
 module.exports = {
