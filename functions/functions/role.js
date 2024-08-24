@@ -44,5 +44,5 @@ function mentionedRoles(message, index = 0) {
       return null;
   }
 }
-// Export functions
+
 module.exports = { createRole, findRole, mentionedRoles };
