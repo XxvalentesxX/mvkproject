@@ -49,7 +49,10 @@ async function checkUserPerms({ user, permissions, guild }) {
     }
 
     try {
-        const member = await guild.members.fetch(user);
+        // Asegurarse de que `guild` sea un objeto Guild
+        const guildObj = await guild.fetch(); // Obtén el objeto Guild si `guild` es solo un ID
+
+        const member = await guildObj.members.fetch(user);
 
         if (!member) {
             throw new Error("The user was not found.");
