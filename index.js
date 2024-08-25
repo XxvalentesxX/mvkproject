@@ -2,7 +2,6 @@ const startBot = require("./functions/functions/startBot");
 const loadHandler = require('./functions/functions/loadHandler');
 const sendMessage = require("./functions/functions/sendMessage");
 const alwaysReply = require('./functions/events/alwaysReply');
-const { setServerVar, setUserVar, setChannelVar, setVar, getVar, getChannelVar, getUserVar, getServerVar, variableCreate, varExists } = require('./functions/functions/variables');
 const banUser = require("./functions/functions/ban");
 const { jsonClear, jsonExists, jsonSet, jsonParse, jsonPretty, jsonStringify, jsonUnset, json } = require("./functions/functions/jsonFunctions");
 const loadEvents = require('./functions/functions/loadEvents')
@@ -22,16 +21,6 @@ module.exports = {
     sendMessage,
     embedCreate,
     alwaysReply,
-    setServerVar,
-    setUserVar,
-    setChannelVar,
-    setVar,
-    getVar,
-    getChannelVar,
-    getUserVar,
-    getServerVar,
-    variableCreate,
-    varExists,
     banUser,
     jsonClear,
     jsonExists,
