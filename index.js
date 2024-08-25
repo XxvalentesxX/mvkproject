@@ -13,7 +13,8 @@ const newCommand = require('./functions/functions/newCommands');
 const { createRole, findRole, mentionedRoles } = require("./functions/functions/role");
 const loadSlashCommandsHandler = require("./functions/functions/slashs/loadSlashCommandsHandler");
 const { subCommand, newSlashCommand } = require("./functions/functions/slashs/slashCommands");
-const embedCreate = require('./functions/functions/embedCreate')
+const embedCreate = require('./functions/functions/embedCreate');
+const { setServerVar, getServerVar, setChannelVar, getChannelVar, setUserVar, getUserVar, setVar, getVar, varExists, variableCreate } = require("./functions/functions/variables");
 
 module.exports = {
     startBot,
@@ -43,5 +44,15 @@ module.exports = {
     newCommand,
     loadSlashCommandsHandler,
     subCommand,
-    newSlashCommand
+    newSlashCommand,
+    setServerVar,
+    getServerVar,
+    setChannelVar,
+    getChannelVar,
+    setUserVar,
+    getUserVar,
+    setVar,
+    getVar,
+    varExists,
+    variableCreate
 };
