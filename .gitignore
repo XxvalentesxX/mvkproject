@@ -2,4 +2,3 @@ node_modules/
 test/
 event/
 commands/
-index.js
