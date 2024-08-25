@@ -9,7 +9,7 @@ const checkContains = require('./functions/functions/checkContains');
 const checkUserPerms = require('./functions/functions/checkPermissions');
 const { guildID, getMessageContent, stop }= require('./functions/functions/functions');
 const loop = require('./functions/functions/loop');
-const newCommand = require('./functions/functions/newCommands');
+const { newCommand } = require('./functions/functions/newCommands');
 const { createRole, findRole, mentionedRoles } = require("./functions/functions/role");
 const loadSlashCommandsHandler = require("./functions/functions/slashs/loadSlashCommandsHandler");
 const { subCommand, newSlashCommand } = require("./functions/functions/slashs/slashCommands");
@@ -41,7 +41,6 @@ module.exports = {
     createRole,
     findRole,
     mentionedRoles,
-    newCommand,
     loadSlashCommandsHandler,
     subCommand,
     newSlashCommand,
@@ -54,5 +53,6 @@ module.exports = {
     setVar,
     getVar,
     varExists,
-    variableCreate
+    variableCreate,
+    newCommand
 };
