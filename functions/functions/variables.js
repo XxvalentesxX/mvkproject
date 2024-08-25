@@ -3,7 +3,6 @@ const path = require('path');
 
 const basePath = path.join(__dirname, '..', 'variables');
 
-// Asegurar que la ruta y las carpetas existen antes de guardar el archivo
 function ensureDirectoryExistence(filePath) {
   const dirname = path.dirname(filePath);
   if (!fs.existsSync(dirname)) {
@@ -11,7 +10,6 @@ function ensureDirectoryExistence(filePath) {
   }
 }
 
-// Funciones comunes para cargar y guardar archivos JSON
 function loadVarFile(type, name) {
   const filePath = path.join(basePath, type, `${name}.json`);
   if (!fs.existsSync(filePath)) {
@@ -27,7 +25,6 @@ function saveVarFile(type, name, data) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
 }
 
-// Crear variable si no existe
 function variableCreate({ name, type }) {
   if (!['global_user', 'user', 'server', 'channel'].includes(type)) {
     throw new Error('Invalid type. Valid types are: global_user, user, server, channel.');
@@ -42,13 +39,11 @@ function variableCreate({ name, type }) {
   return `Variable ${name} of type ${type} already exists.`;
 }
 
-// Verificar si la variable existe
 function varExists({ name, type }) {
   const filePath = path.join(basePath, type, `${name}.json`);
   return fs.existsSync(filePath);
 }
 
-// Funciones para manejar variables de canal
 function setChannelVar({ name, value, channelID, serverID }) {
   const data = loadVarFile('channel', name);
   if (!data[serverID]) {
@@ -63,7 +58,6 @@ function getChannelVar({ name, channelID, serverID }) {
   return data[serverID] && data[serverID][channelID] ? data[serverID][channelID].value : undefined;
 }
 
-// Funciones para manejar variables de servidor
 function setServerVar({ name, value, serverID }) {
   const data = loadVarFile('server', name);
   data[serverID] = { value };
@@ -75,7 +69,6 @@ function getServerVar({ name, serverID }) {
   return data[serverID] ? data[serverID].value : undefined;
 }
 
-// Funciones para manejar variables de usuario
 function setUserVar({ name, value, userID }) {
   const data = loadVarFile('user', name);
   data[userID] = { value };
@@ -87,7 +80,6 @@ function getUserVar({ name, userID }) {
   return data[userID] ? data[userID].value : undefined;
 }
 
-// Funciones para manejar variables globales por usuario
 function setVar({ name, value, userID }) {
   const data = loadVarFile('global_user', name);
   data[userID] = { value };
