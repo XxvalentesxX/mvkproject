@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const basePath = path.join(__dirname, '..', '..', '..', 'variables');
+const basePath = path.join(__dirname, '..', '..', '..', '..', 'variables');
 
 function ensureDirectoryExistence(filePath) {
   const dirname = path.dirname(filePath);
