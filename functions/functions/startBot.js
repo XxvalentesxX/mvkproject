@@ -2,6 +2,8 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const sendMessage = require('./sendMessage');
 const banUser = require('./ban');
 
+let clientInstance;
+
 function startBot(config) {
   const {
     token,
@@ -40,9 +42,15 @@ function startBot(config) {
   };
 
   client.banUser = (options) => banUser(options);
+
   client.login(token);
+
+  clientInstance = client;
 
   return client;
 }
 
-module.exports = startBot;
+module.exports = {
+  startBot,
+  getClient: () => clientInstance
+};

@@ -1,4 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
+const { getClient } = require('./startBot');
 
 const PERMISSIONS_MAP = {
     "CREATE_INSTANT_INVITE": "CreateInstantInvite",
@@ -43,14 +44,17 @@ const PERMISSIONS_MAP = {
     "MODERATE_MEMBERS": "ModerateMembers"
 };
 
-async function checkUserPerms({ user, permissions, guild }) {
-    if (!user || !permissions || !guild) {
-        throw new Error('Missing required parameters: user, permissions, or guild.');
+async function checkUserPerms({ user, permissions, guildId }) {
+    if (!user || !permissions || !guildId) {
+        throw new Error('Missing required parameters: user, permissions, or guildId.');
     }
 
     try {
-        // Asegurarse de que `guild` sea un objeto Guild
-        const guildObj = await guild.fetch(); // Obtén el objeto Guild si `guild` es solo un ID
+        const client = getClient();
+        if (!client) throw new Error("Client not found.");
+
+        const guildObj = client.guilds.cache.get(guildId);
+        if (!guildObj) throw new Error("Guild not found.");
 
         const member = await guildObj.members.fetch(user);
 
