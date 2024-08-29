@@ -5,52 +5,45 @@ const banUser = require('./ban');
 let clientInstance;
 
 function startBot(config) {
-  const {
-    token,
-    intents,
-    consoleLog,
-    consoleError,
-    prefix
-  } = config;
+    const { token, intents, consoleLog, consoleError, prefix } = config;
+    const resolvedIntents = intents.map(intent => GatewayIntentBits[intent]);
 
-  const resolvedIntents = intents.map(intent => GatewayIntentBits[intent]);
+    const client = new Client({ intents: resolvedIntents });
 
-  const client = new Client({ intents: resolvedIntents });
+    client.once('ready', () => {
+        if (consoleLog) {
+            console.log(consoleLog.replace('${bot.username}', client.user.username));
+        } else {
+            console.log(`Bot is online as ${client.user.tag}`);
+        }
+    });
 
-  client.once('ready', () => {
-    if (consoleLog) {
-      console.log(consoleLog.replace('${bot.username}', client.user.username));
-    } else {
-      console.log(`Bot is online as ${client.user.tag}`);
+    client.on('error', (error) => {
+        if (consoleError) {
+            console.error(consoleError, error);
+        } else {
+            console.error('An error occurred:', error);
+        }
+    });
+
+    if (prefix) {
+        client.prefix = prefix;
     }
-  });
 
-  client.on('error', (error) => {
-    if (consoleError) {
-      console.error(consoleError, error);
-    } else {
-      console.error('An error occurred:', error);
-    }
-  });
+    client.sendMessage = function (options) {
+        return sendMessage.call(this, options);
+    };
 
-  if (prefix) {
-    client.prefix = prefix;
-  }
+    client.banUser = (options) => banUser(options);
 
-  client.sendMessage = function (options) {
-    return sendMessage.call(this, options);
-  };
+    client.login(token);
 
-  client.banUser = (options) => banUser(options);
+    clientInstance = client;
 
-  client.login(token);
-
-  clientInstance = client;
-
-  return client;
+    return client;
 }
 
 module.exports = {
-  startBot,
-  getClient: () => clientInstance
+    startBot,
+    getClient: () => clientInstance
 };
