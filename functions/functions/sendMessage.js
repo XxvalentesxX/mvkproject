@@ -1,4 +1,4 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, InteractionType, DiscordAPIError } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder } = require('discord.js');
 
 async function sendMessage({ channel, message = '', embeds = [], components = {}, ephemeral = {} }) {
   if (!channel) {
@@ -51,20 +51,7 @@ async function sendMessage({ channel, message = '', embeds = [], components = {}
       components: actionRows.length > 0 ? actionRows : undefined
     });
   } catch (error) {
-    if (error instanceof DiscordAPIError) {
-      switch (error.code) {
-        case 10062:
-          console.warn('Interaction is unknown or expired.');
-          break;
-        case 40060:
-          console.warn('Interaction has already been acknowledged.');
-          break;
-        default:
-          console.error('Discord API Error:', error);
-      }
-    } else {
-      console.error('General Error:', error);
-    }
+    console.error('Error sending message:', error);
   }
 }
 

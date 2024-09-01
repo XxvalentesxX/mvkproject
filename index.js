@@ -17,6 +17,7 @@ const embedCreate = require('./functions/functions/embedCreate');
 const { setServerVar, getServerVar, setChannelVar, getChannelVar, setUserVar, getUserVar, setVar, getVar, varExists, variableCreate } = require("./functions/functions/variables");
 const timeoutUser = require("./functions/functions/timeout");
 const { addButtonInteraction, createButton } = require("./functions/functions/components/buttons");
+const { splitText, textSplit, getTextSplitLength } = require("./functions/functions/splits");
 
 module.exports = {
     startBot,
@@ -59,5 +60,8 @@ module.exports = {
     newCommand,
     timeoutUser,
     createButton,
-    addButtonInteraction
+    addButtonInteraction,
+    splitText,
+    textSplit,
+    getTextSplitLength
 };

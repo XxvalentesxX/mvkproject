@@ -51,8 +51,6 @@ async function handleButtonInteractions(interaction) {
         const buttonAction = buttonInteractions.get(interaction.customId);
         if (buttonAction) {
           await buttonAction(interaction);
-        } else {
-          console.error('No action found for button with customId:', interaction.customId);
         }
       } catch (error) {
         console.error('Error handling button interaction:', error);
