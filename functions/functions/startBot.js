@@ -1,6 +1,8 @@
+// startBot.js
 const { Client, GatewayIntentBits } = require('discord.js');
 const sendMessage = require('./sendMessage');
 const banUser = require('./ban');
+const { handleButtonInteractions } = require('./components/buttons');
 
 let clientInstance;
 
@@ -23,6 +25,14 @@ function startBot(config) {
             console.error(consoleError, error);
         } else {
             console.error('An error occurred:', error);
+        }
+    });
+
+    client.on('interactionCreate', async (interaction) => {
+        try {
+            await handleButtonInteractions(interaction);
+        } catch (error) {
+            console.error('Error handling interaction:', error);
         }
     });
 

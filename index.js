@@ -16,7 +16,7 @@ const { subCommand, newSlashCommand } = require("./functions/functions/slashs/sl
 const embedCreate = require('./functions/functions/embedCreate');
 const { setServerVar, getServerVar, setChannelVar, getChannelVar, setUserVar, getUserVar, setVar, getVar, varExists, variableCreate } = require("./functions/functions/variables");
 const timeoutUser = require("./functions/functions/timeout");
-const addButton = require("./functions/functions/addButton");
+const { addButtonInteraction, createButton } = require("./functions/functions/components/buttons");
 
 module.exports = {
     startBot,
@@ -58,5 +58,6 @@ module.exports = {
     variableCreate,
     newCommand,
     timeoutUser,
-    addButton
+    createButton,
+    addButtonInteraction
 };
