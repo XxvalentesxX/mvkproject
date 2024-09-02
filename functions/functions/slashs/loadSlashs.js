@@ -2,7 +2,7 @@ const { Collection } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
-function loadSlashCommandsHandler(folderPath, client) {
+function loadSlashs(folderPath, client) {
   client.slashCommands = new Collection();
 
   const absolutePath = path.resolve(folderPath);
@@ -64,4 +64,4 @@ function loadSlashCommandsHandler(folderPath, client) {
   });
 }
 
-module.exports = loadSlashCommandsHandler;
+module.exports = loadSlashs;

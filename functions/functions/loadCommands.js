@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { newCommand, handleCommand } = require('./newCommands'); 
 
-function loadHandler(folderPath, client) {
+function loadCommands(folderPath, client) {
   const absolutePath = path.resolve(folderPath);
 
   function loadFromDir(dir) {
@@ -47,4 +47,4 @@ function loadHandler(folderPath, client) {
   });
 }
 
-module.exports = loadHandler;
+module.exports = loadCommands;

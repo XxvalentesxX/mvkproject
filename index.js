@@ -1,5 +1,5 @@
-const { startBot } = require("./functions/functions/startBot");
-const loadHandler = require('./functions/functions/loadHandler');
+const { startBot, getClient } = require("./functions/functions/startBot");
+const loadCommands = require('./functions/functions/loadCommands');
 const sendMessage = require("./functions/functions/sendMessage");
 const alwaysReply = require('./functions/events/alwaysReply');
 const banUser = require("./functions/functions/ban");
@@ -11,7 +11,7 @@ const { guildID, getMessageContent, stop }= require('./functions/functions/funct
 const loop = require('./functions/functions/loop');
 const { newCommand } = require('./functions/functions/newCommands');
 const { createRole, findRole, mentionedRoles } = require("./functions/functions/role");
-const loadSlashCommandsHandler = require("./functions/functions/slashs/loadSlashCommandsHandler");
+const loadSlashs = require("./functions/functions/slashs/loadSlashs");
 const { subCommand, newSlashCommand } = require("./functions/functions/slashs/slashCommands");
 const embedCreate = require('./functions/functions/embedCreate');
 const { setServerVar, getServerVar, setChannelVar, getChannelVar, setUserVar, getUserVar, setVar, getVar, varExists, variableCreate } = require("./functions/functions/variables");
@@ -21,7 +21,7 @@ const { splitText, textSplit, getTextSplitLength } = require("./functions/functi
 
 module.exports = {
     startBot,
-    loadHandler,
+    loadCommands,
     sendMessage,
     embedCreate,
     alwaysReply,
@@ -44,7 +44,7 @@ module.exports = {
     createRole,
     findRole,
     mentionedRoles,
-    loadSlashCommandsHandler,
+    loadSlashs,
     subCommand,
     newSlashCommand,
     setServerVar,
@@ -63,5 +63,6 @@ module.exports = {
     addButtonInteraction,
     splitText,
     textSplit,
-    getTextSplitLength
+    getTextSplitLength,
+    getClient
 };
