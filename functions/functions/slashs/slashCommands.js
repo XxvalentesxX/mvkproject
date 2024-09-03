@@ -136,4 +136,16 @@ function subCommand({ name, description, options = [], code }) {
   };
 }
 
-module.exports = { newSlashCommand, subCommand };
+function slashOption(interaction, optionName) {
+  const option = interaction.options.get(optionName);
+
+  if (option) {
+    return String(option.value);
+  } else {
+    throw new Error(`Option ${optionName} not found in the interaction.`);
+  }
+}
+
+
+
+module.exports = { newSlashCommand, subCommand, slashOption };

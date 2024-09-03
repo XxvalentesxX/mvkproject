@@ -12,7 +12,7 @@ const loop = require('./functions/functions/loop');
 const { newCommand } = require('./functions/functions/newCommands');
 const { createRole, findRole, mentionedRoles } = require("./functions/functions/role");
 const loadSlashs = require("./functions/functions/slashs/loadSlashs");
-const { subCommand, newSlashCommand } = require("./functions/functions/slashs/slashCommands");
+const { subCommand, newSlashCommand, slashOption } = require("./functions/functions/slashs/slashCommands");
 const embedCreate = require('./functions/functions/embedCreate');
 const { setServerVar, getServerVar, setChannelVar, getChannelVar, setUserVar, getUserVar, setVar, getVar, varExists, variableCreate } = require("./functions/functions/variables");
 const timeoutUser = require("./functions/functions/timeout");
@@ -64,5 +64,6 @@ module.exports = {
     splitText,
     textSplit,
     getTextSplitLength,
-    getClient
+    getClient,
+    slashOption
 };

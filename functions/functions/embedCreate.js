@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 
 function embedCreate(embedOptions) {
-  const { description, author, authorIcon, title, titleUrl, thumbnail, footer, footerIcon, image, addfields } = embedOptions;
+  const { description, author, authorIcon, title, titleUrl, thumbnail, footer, footerIcon, image, addFields } = embedOptions;
 
   if (!description && !author && !title) {
     throw new Error('The description field is required if no other field is provided.');
@@ -45,13 +45,13 @@ function embedCreate(embedOptions) {
   if (embedOptions.color) embed.setColor(embedOptions.color);
   if (embedOptions.timestamp) embed.setTimestamp();
 
-  if (Array.isArray(addfields) && addfields.length > 0) {
-    addfields.forEach(field => {
-      const { name, text, inline } = field;
-      if (!name || !text) {
-        throw new Error('The name and text of a field cannot be empty.');
+  if (Array.isArray(addFields) && addFields.length > 0) {
+    addFields.forEach(field => {
+      const { name, content, inline } = field;
+      if (!name || !content) {
+        throw new Error('The name and content of a field cannot be empty.');
       }
-      embed.addFields({ name, value: text, inline: !!inline });
+      embed.addFields({ name, value: content, inline: !!inline });
     });
   }
 
