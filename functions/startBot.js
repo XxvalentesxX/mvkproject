@@ -1,7 +1,6 @@
-// startBot.js
 const { Client, GatewayIntentBits } = require('discord.js');
-const sendMessage = require('./sendMessage');
-const banUser = require('./ban');
+const sendMessage = require('./functions/sendMessage');
+const banUser = require('./moderation/ban');
 const { handleButtonInteractions } = require('./components/buttons');
 
 let clientInstance;

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { newCommand, handleCommand } = require('./newCommands'); 
+const { newCommand, handleCommand } = require('../manage_commands/newCommands'); 
 
 function loadCommands(folderPath, client) {
   const absolutePath = path.resolve(folderPath);

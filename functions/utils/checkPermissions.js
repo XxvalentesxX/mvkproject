@@ -1,5 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
-const { getClient } = require('./startBot');
+const { getClient } = require('../startBot');
 
 const PERMISSIONS_MAP = {
     "CREATE_INSTANT_INVITE": "CreateInstantInvite",

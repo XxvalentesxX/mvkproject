@@ -1,4 +1,4 @@
-const { getClient } = require('./startBot'); 
+const { getClient } = require('../startBot'); 
 
 async function timeoutUser({ userId, guildId, time, reason }) {
     try {
