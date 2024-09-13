@@ -1,5 +1,5 @@
 const { Client, GatewayIntentBits } = require('discord.js');
-const sendMessage = require('./functions/sendMessage');
+const sendMessage = require('./miscelaneos/sendMessage');
 const banUser = require('./moderation/ban');
 const { handleButtonInteractions } = require('./components/buttons');
 
