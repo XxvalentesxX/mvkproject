@@ -37,7 +37,6 @@ module.exports = {
     loadEvents,
     checkContains,
     checkUserPerms,
-    guildID,
     getMessageContent,
     stop,
     loop,
