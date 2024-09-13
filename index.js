@@ -1,7 +1,6 @@
 const { startBot, getClient } = require("./functions/startBot");
 const loadCommands = require('./functions/handlers/loadCommands');
 const sendMessage = require("./functions/miscelaneos/sendMessage");
-const alwaysReply = require('./functions/events/alwaysReply');
 const banUser = require("./functions/moderation/ban");
 const { jsonClear, jsonExists, jsonSet, jsonParse, jsonPretty, jsonStringify, jsonUnset, json } = require("./functions/utils/jsonFunctions");
 const loadEvents = require('./functions/handlers/loadEvents');
@@ -18,13 +17,13 @@ const { setServerVar, getServerVar, setChannelVar, getChannelVar, setUserVar, ge
 const timeoutUser = require("./functions/moderation/timeout");
 const { addButtonInteraction, createButton } = require("./functions/components/buttons");
 const { splitText, textSplit, getTextSplitLength } = require("./functions/utils/splits");
+const { newEvent } = require("./functions/manage_commands/newEvents");
 
 module.exports = {
     startBot,
     loadCommands,
     sendMessage,
     embedCreate,
-    alwaysReply,
     banUser,
     jsonClear,
     jsonExists,
@@ -64,5 +63,6 @@ module.exports = {
     textSplit,
     getTextSplitLength,
     getClient,
-    slashOption
+    slashOption,
+    newEvent
 };
