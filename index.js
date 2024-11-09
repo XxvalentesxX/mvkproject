@@ -9,7 +9,6 @@ const { checkUserPerms } = require('./functions/utils/checkPermissions');
 const { getMessageContent, stop }= require('./functions/utils/stopAndMessage');
 const loop = require('./functions/utils/loop');
 const { newCommand } = require('./functions/manage_commands/newCommands');
-const { createRole, findRole, mentionedRoles } = require("./functions/administration/role");
 const loadSlashs = require("./functions/handlers/loadSlashs");
 const { subCommand, newSlashCommand, slashOption } = require("./functions/manage_commands/slashCommands");
 const embedCreate = require('./functions/utils/embedCreate');
@@ -18,6 +17,7 @@ const timeoutUser = require("./functions/moderation/timeout");
 const { addButtonInteraction, createButton } = require("./functions/components/buttons");
 const { splitText, textSplit, getTextSplitLength } = require("./functions/utils/splits");
 const { newEvent } = require("./functions/manage_commands/newEvents");
+const { create } = require("./functions/administration/create");
 
 module.exports = {
     startBot,
@@ -39,9 +39,6 @@ module.exports = {
     getMessageContent,
     stop,
     loop,
-    createRole,
-    findRole,
-    mentionedRoles,
     loadSlashs,
     subCommand,
     newSlashCommand,
@@ -64,5 +61,6 @@ module.exports = {
     getTextSplitLength,
     getClient,
     slashOption,
-    newEvent
+    newEvent,
+    create
 };

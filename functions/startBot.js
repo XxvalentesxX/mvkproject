@@ -17,6 +17,8 @@ function startBot(config) {
         } else {
             console.log(`Bot is online as ${client.user.tag}`);
         }
+        
+        clientInstance = client;
     });
 
     client.on('error', (error) => {
@@ -46,8 +48,6 @@ function startBot(config) {
     client.banUser = (options) => banUser(options);
 
     client.login(token);
-
-    clientInstance = client;
 
     return client;
 }
