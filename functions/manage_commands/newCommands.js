@@ -7,19 +7,18 @@ function newCommand({ name, aliases = [], description, code }) {
     throw new Error('Command must have a name, description, and code.');
   }
 
-  // Agregar el comando principal
-  commands.set(name, { description, code });
+  commands.set(name.toLowerCase(), { description, code });
 
-  // Agregar los alias
   aliases.forEach(alias => {
-    commands.set(alias, { description, code });
+    commands.set(alias.toLowerCase(), { description, code });
   });
 }
 
 async function handleCommand(message) {
-  if (!message.content.startsWith(message.client.prefix)) return;
+  const prefix = message.client.prefix.toLowerCase();
+  if (!message.content.toLowerCase().startsWith(prefix)) return;
 
-  const args = message.content.slice(message.client.prefix.length).trim().split(/ +/);
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
 
   const command = commands.get(commandName);
