@@ -1,58 +1,53 @@
 const { EmbedBuilder } = require('discord.js');
 
-function embedCreate(embedOptions) {
-  const { description, author, authorIcon, title, titleUrl, thumbnail, footer, footerIcon, image, addFields } = embedOptions;
-
-  if (!description && !author && !title) {
-    throw new Error('The description field is required if no other field is provided.');
+function embedCreate(options) {
+  // Validar que al menos uno de estos campos esté presente: description, title, author.content, footer.content, image
+  if (!options.description && !options.title && !options.author?.content && !options.footer?.content && !options.image) {
+    throw new Error("Embed must have at least one of the following: description, title, author.content, footer.content, or image.");
   }
 
-  if (author === '') {
-    throw new Error('The author field cannot be empty.');
-  }
-
-  if (title === '') {
-    throw new Error('The title field cannot be empty.');
-  }
-
-  if (footer === '') {
-    throw new Error('The footer field cannot be empty.');
-  }
-
-  const validateUrl = (url, fieldName) => {
-    try {
-      new URL(url);
-    } catch {
-      throw new Error(`The URL provided in ${fieldName} is invalid.`);
-    }
-  };
-
-  if (authorIcon) validateUrl(authorIcon, 'authorIcon');
-  if (titleUrl) validateUrl(titleUrl, 'titleUrl');
-  if (thumbnail) validateUrl(thumbnail, 'thumbnail');
-  if (footerIcon) validateUrl(footerIcon, 'footerIcon');
-  if (image) validateUrl(image, 'image');
-
+  // Crear un nuevo embed
   const embed = new EmbedBuilder();
 
-  if (description) embed.setDescription(description);
-  if (author) embed.setAuthor({ name: author, iconURL: authorIcon });
-  if (title) embed.setTitle(title).setURL(titleUrl);
-  if (thumbnail) embed.setThumbnail(thumbnail);
-  if (footer) embed.setFooter({ text: footer, iconURL: footerIcon });
-  if (image) embed.setImage(image);
+  // Si description está presente, se establece
+  if (options.description) {
+    embed.setDescription(options.description);
+  }
 
-  if (embedOptions.color) embed.setColor(embedOptions.color);
-  if (embedOptions.timestamp) embed.setTimestamp();
+  // Si title está presente, se establece
+  if (options.title) {
+    embed.setTitle(options.title);
+  }
 
-  if (Array.isArray(addFields) && addFields.length > 0) {
-    addFields.forEach(field => {
-      const { name, content, inline } = field;
-      if (!name || !content) {
-        throw new Error('The name and content of a field cannot be empty.');
-      }
-      embed.addFields({ name, value: content, inline: !!inline });
+  // Si color está presente, se establece
+  if (options.color) {
+    embed.setColor(options.color);
+  }
+
+  // Si se proporciona author, se agrega (content obligatorio, icon opcional)
+  if (options.author && typeof options.author === 'object' && options.author.content) {
+    embed.setAuthor({
+      name: options.author.content,
+      iconURL: options.author.icon, // icono opcional
     });
+  }
+
+  // Si se proporciona footer, se agrega (content obligatorio, icon opcional)
+  if (options.footer && typeof options.footer === 'object' && options.footer.content) {
+    embed.setFooter({
+      text: options.footer.content,
+      iconURL: options.footer.icon, // icono opcional
+    });
+  }
+
+  // Si se proporciona imagen, se agrega
+  if (options.image) {
+    embed.setImage(options.image);
+  }
+
+  // Si se proporciona timestamp, se agrega
+  if (options.timestamp) {
+    embed.setTimestamp();
   }
 
   return embed;

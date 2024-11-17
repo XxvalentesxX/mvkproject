@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const { newCommand, handleCommand } = require('../manage_commands/newCommands'); 
+const { newCommand, handleCommand } = require('../manage_commands/newCommand');
+
+const commandsStatus = new Map();
 
 function loadCommands(folderPath, client) {
   const absolutePath = path.resolve(folderPath);
@@ -24,8 +26,8 @@ function loadCommands(folderPath, client) {
           const command = require(filePath);
 
           if (command && typeof command === 'object' && command.name) {
+            commandsStatus.set(command.name, { enabled: true });
             newCommand(command);
-            console.log(`Command loaded: ${command.name}`);
           }
         } catch (error) {
           console.error(`Error loading file ${filePath}:`, error);
@@ -44,6 +46,24 @@ function loadCommands(folderPath, client) {
     } catch (error) {
       console.error('Error handling command:', error);
     }
+  });
+
+  showCommandsStatus();
+}
+
+function showCommandsStatus() {
+  const maxCommandLength = Math.max(...[...commandsStatus.keys()].map(cmd => cmd.length)); 
+
+  const header = 'Commands';
+  const separator = '-'.repeat(maxCommandLength + 3);
+
+  console.log(header.padEnd(maxCommandLength + 3) + '| Status');
+  console.log(separator);
+
+  commandsStatus.forEach((status, commandName) => {
+    const symbol = status.enabled ? '✅' : '❌';
+    const commandNameFormatted = commandName.padEnd(maxCommandLength);
+    console.log(`${commandNameFormatted} | ${symbol}`);
   });
 }
 

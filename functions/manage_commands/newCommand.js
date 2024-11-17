@@ -1,18 +1,18 @@
 const { Collection } = require('discord.js');
-
 const commands = new Collection();
 
-function newCommand({ name, aliases = [], description, code }) {
-  if (!name || !description || !code) {
-    throw new Error('Command must have a name, description, and code.');
+function newCommand({ name, aliases = [], code }) {
+  if (!name || !code) {
+    console.error('Command must have a name and code.');
+    return;
   }
 
-  // Agregar el comando principal
-  commands.set(name, { description, code });
+  // Almacenar el comando principal
+  commands.set(name, { code });
 
-  // Agregar los alias
+  // Almacenar los alias si los hay
   aliases.forEach(alias => {
-    commands.set(alias, { description, code });
+    commands.set(alias, { code });
   });
 }
 
@@ -22,11 +22,12 @@ async function handleCommand(message) {
   const args = message.content.slice(message.client.prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
 
+  // Buscar el comando usando el nombre o alias
   const command = commands.get(commandName);
 
   if (command) {
     try {
-      await command.code(message);
+      await command.code(message, args); // Ejecutar el código del comando
     } catch (error) {
       console.error(`Error executing command ${commandName}:`, error);
     }

@@ -1,58 +1,42 @@
 const { Client, GatewayIntentBits } = require('discord.js');
-const sendMessage = require('./miscelaneos/sendMessage');
-const banUser = require('./moderation/ban');
-const { handleButtonInteractions } = require('./components/buttons');
 
-let clientInstance;
+let client;
 
-function startBot(config) {
-    const { token, intents, consoleLog, consoleError, prefix } = config;
-    const resolvedIntents = intents.map(intent => GatewayIntentBits[intent]);
+function startBot({ token, prefix, intents }) {
+  if (!token) {
+    console.error("Token is missing.");
+    return;
+  }
 
-    const client = new Client({ intents: resolvedIntents });
+  if (!prefix) {
+    console.error("Prefix is missing.");
+    return;
+  }
 
-    client.once('ready', () => {
-        if (consoleLog) {
-            console.log(consoleLog.replace('${bot.username}', client.user.username));
-        } else {
-            console.log(`Bot is online as ${client.user.tag}`);
-        }
-        
-        clientInstance = client;
-    });
+  if (!intents || intents.length === 0) {
+    console.error("Intents are missing.");
+    return;
+  }
 
-    client.on('error', (error) => {
-        if (consoleError) {
-            console.error(consoleError, error);
-        } else {
-            console.error('An error occurred:', error);
-        }
-    });
+  client = new Client({
+    intents: intents.map(intent => GatewayIntentBits[intent] || intent),
+  });
 
-    client.on('interactionCreate', async (interaction) => {
-        try {
-            await handleButtonInteractions(interaction);
-        } catch (error) {
-            console.error('Error handling interaction:', error);
-        }
-    });
+  client.prefix = prefix;
 
-    if (prefix) {
-        client.prefix = prefix;
-    }
+  client.login(token)
+    .then(() => console.log('Bot logged in successfully!'))
+    .catch(err => console.error('Error logging in:', err));
 
-    client.sendMessage = function (options) {
-        return sendMessage.call(this, options);
-    };
-
-    client.banUser = (options) => banUser(options);
-
-    client.login(token);
-
-    return client;
+  return client;
 }
 
-module.exports = {
-    startBot,
-    getClient: () => clientInstance
-};
+function getClient() {
+  if (!client) {
+    console.error('Client is not initialized. Please call startBot first.');
+    return null;
+  }
+  return client;
+}
+
+module.exports = { startBot, getClient };
