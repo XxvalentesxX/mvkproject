@@ -18,6 +18,8 @@ const { splitText, textSplit, getTextSplitLength } = require("./functions/utils/
 const { newEvent } = require("./functions/manage_commands/newEvents");
 const { createChannel } = require("./functions/administration/createChannel");
 const { startBot } = require('./functions/startBot');
+const addRole = require('./functions/administration/addRole');
+const removeRole = require('./functions/administration/removeRole');
 
 module.exports = {
     loadCommands,
@@ -61,5 +63,7 @@ module.exports = {
     slashOption,
     newEvent,
     createChannel,
-    startBot
+    startBot,
+    addRole,
+    removeRole
 };

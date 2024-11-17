@@ -33,7 +33,7 @@ function startBot({ token, prefix, intents }) {
 
 function getClient() {
   if (!client) {
-    console.error('Client is not initialized. Please call startBot first.');
+    console.log('Client started successfully. You can now use getClient();.');
     return null;
   }
   return client;

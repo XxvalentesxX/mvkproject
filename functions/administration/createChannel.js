@@ -1,6 +1,6 @@
 const { ChannelType } = require('discord.js');
 const { getClient } = require('../startBot');
-const client = getClient(); // Se asegura de obtener el cliente de Discord
+const client = getClient();
 
 
 async function createChannel({ name, type, category = null, topic = null, nsfw = false, guildID }) {
@@ -13,12 +13,11 @@ async function createChannel({ name, type, category = null, topic = null, nsfw =
         throw new Error(`No se encontró el guild con ID: ${guildID}`);
     }
 
-    // Asegúrate de usar los valores correctos de ChannelType
     const channelType = {
-        text: ChannelType.GuildText,      // Canal de texto
-        voice: ChannelType.GuildVoice,    // Canal de voz
-        forum: ChannelType.GuildForum,    // Canal de foro
-        stage: ChannelType.GuildStageVoice // Canal de voz en escenario
+        text: ChannelType.GuildText,
+        voice: ChannelType.GuildVoice,
+        forum: ChannelType.GuildForum,
+        stage: ChannelType.GuildStageVoice
     }[type];
 
     if (!channelType) {
@@ -28,7 +27,7 @@ async function createChannel({ name, type, category = null, topic = null, nsfw =
     try {
         const channel = await guild.channels.create({
             name,
-            type: channelType,    // Asignar el tipo de canal correcto
+            type: channelType,
             parent: category || undefined,
             topic: topic || undefined,
             nsfw,
