@@ -7,7 +7,7 @@ const checkContains = require('./functions/utils/checkContains');
 const { checkUserPerms } = require('./functions/utils/checkPermissions');
 const { getMessageContent, stop }= require('./functions/utils/stopAndMessage');
 const loop = require('./functions/utils/loop');
-const { newCommand } = require('./functions/manage_commands/newCommands');
+const { newCommand } = require('./functions/manage_commands/newCommand');
 const loadSlashs = require("./functions/handlers/loadSlashs");
 const { subCommand, newSlashCommand, slashOption } = require("./functions/manage_commands/slashCommands");
 const embedCreate = require('./functions/utils/embedCreate');
@@ -17,7 +17,7 @@ const { addButtonInteraction, createButton } = require("./functions/components/b
 const { splitText, textSplit, getTextSplitLength } = require("./functions/utils/splits");
 const { newEvent } = require("./functions/manage_commands/newEvents");
 const { createChannel } = require("./functions/administration/createChannel");
-const { startBot, getClient } = require('./functions/startBot');
+const { startBot } = require('./functions/startBot');
 
 module.exports = {
     loadCommands,
@@ -61,6 +61,5 @@ module.exports = {
     slashOption,
     newEvent,
     createChannel,
-    startBot,
-    getClient
+    startBot
 };
