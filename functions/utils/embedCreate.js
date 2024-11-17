@@ -1,8 +1,17 @@
 const { EmbedBuilder } = require('discord.js');
 
 function embedCreate(options) {
-  if (!options.description && !options.title && !options.author?.content && !options.footer?.content && !options.image) {
-    throw new Error("Embed must have at least one of the following: description, title, author.content, footer.content, or image.");
+  if (
+    !options.description &&
+    !options.title &&
+    !options.author?.content &&
+    !options.footer?.content &&
+    !options.image &&
+    !options.fields
+  ) {
+    throw new Error(
+      "Embed must have at least one of the following: description, title, author.content, footer.content, image, or fields."
+    );
   }
 
   const embed = new EmbedBuilder();
@@ -39,6 +48,10 @@ function embedCreate(options) {
 
   if (options.timestamp) {
     embed.setTimestamp();
+  }
+
+  if (options.fields && Array.isArray(options.fields)) {
+    embed.addFields(options.fields);
   }
 
   return embed;
