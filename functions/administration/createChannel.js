@@ -1,43 +1,44 @@
-const { ChannelType } = require('discord.js');
 const { getClient } = require('../startBot');
-const client = getClient();
 
-
-async function createChannel({ name, type, category = null, topic = null, nsfw = false, guildID }) {
-    if (!client || !client.guilds) {
-        throw new Error('El cliente no está inicializado o no tiene acceso a los guilds.');
-    }
-
-    const guild = client.guilds.cache.get(guildID);
-    if (!guild) {
-        throw new Error(`No se encontró el guild con ID: ${guildID}`);
-    }
-
-    const channelType = {
-        text: ChannelType.GuildText,
-        voice: ChannelType.GuildVoice,
-        forum: ChannelType.GuildForum,
-        stage: ChannelType.GuildStageVoice
-    }[type];
-
-    if (!channelType) {
-        throw new Error('El tipo de canal proporcionado no es válido.');
-    }
-
+async function createChannel({ guild, type, name, parent, topic = null, nsfw = false }) {
     try {
-        const channel = await guild.channels.create({
+        const client = getClient();
+
+        if (!client) {
+            throw new Error('The client is not available');
+        }
+
+        const guildInstance = await client.guilds.fetch(guild);
+        if (!guildInstance) {
+            throw new Error('Guild not found');
+        }
+
+        const typeMapping = {
+            'text': 0,
+            'voice': 2,
+            'category': 4,
+            'forum': 15
+        };
+
+        const channelType = typeMapping[type.toLowerCase()];
+        if (channelType === undefined) {
+            throw new Error('Invalid channel type. Use "text", "voice", "category", or "forum".');
+        }
+
+        const channelOptions = {
             name,
             type: channelType,
-            parent: category || undefined,
-            topic: topic || undefined,
+            parent,
+            topic,
             nsfw,
-        });
+        };
 
-        console.log(`Canal creado: ${channel.name} (ID: ${channel.id})`);
-        return channel.id;
+        const newChannel = await guildInstance.channels.create(channelOptions);
+
+        return newChannel;
     } catch (error) {
-        console.error('Error al crear el canal:', error);
-        throw new Error('Hubo un problema al crear el canal.');
+        console.error('Error creating the channel:', error);
+        return null;
     }
 }
 
