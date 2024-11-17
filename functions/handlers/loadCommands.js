@@ -38,8 +38,8 @@ function loadCommands(folderPath, client) {
 
   loadFromDir(absolutePath);
 
-  client.on('messageCreate', async message => {
-    if (!message.content.startsWith(client.prefix) || message.author.bot) return;
+  client.on('messageCreate', async (message) => {
+    if (!message.content.toLowerCase().startsWith(client.prefix.toLowerCase()) || message.author.bot) return;
 
     try {
       await handleCommand(message);
