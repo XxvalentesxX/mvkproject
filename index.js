@@ -21,6 +21,8 @@ const { startBot } = require('./functions/startBot');
 const addRole = require('./functions/administration/addRole');
 const removeRole = require('./functions/administration/removeRole');
 const changeNick = require('./functions/moderation/changeNick');
+const addReactions = require('./functions/miscelaneos/addReactions');
+const unbanUser = require('./functions/moderation/unbanUser');
 
 module.exports = {
     loadCommands,
@@ -67,5 +69,7 @@ module.exports = {
     startBot,
     addRole,
     removeRole,
-    changeNick
+    changeNick,
+    addReactions,
+    unbanUser
 };
