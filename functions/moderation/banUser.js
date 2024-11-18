@@ -13,17 +13,19 @@ async function banUser({ guild, user, duration, reason }) {
 
     if (!member.bannable) throw new Error('No se puede banear a este miembro');
 
+    await member.ban({ reason });
+
     if (duration) {
       setTimeout(async () => {
         try {
           await targetGuild.bans.remove(user, 'Duración de ban completada');
         } catch (error) {
-          console.error('Hubo un error al desbanear el usuario.')
+          console.error(`Error al intentar desbanear al usuario ${member.user.tag}:`, error.message);
         }
       }, duration * 24 * 60 * 60 * 1000);
     }
   } catch (error) {
-    console.error('Ha ocurrido un error.')
+    console.error('Error al intentar banear al usuario:', error.message);
   }
 }
 
