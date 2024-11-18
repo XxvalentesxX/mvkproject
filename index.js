@@ -20,6 +20,7 @@ const { createChannel } = require("./functions/administration/createChannel");
 const { startBot } = require('./functions/startBot');
 const addRole = require('./functions/administration/addRole');
 const removeRole = require('./functions/administration/removeRole');
+const changeNick = require('./functions/moderation/changeNick');
 
 module.exports = {
     loadCommands,
@@ -65,5 +66,6 @@ module.exports = {
     createChannel,
     startBot,
     addRole,
-    removeRole
+    removeRole,
+    changeNick
 };
