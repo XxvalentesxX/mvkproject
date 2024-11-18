@@ -13,18 +13,15 @@ async function addRole({ user, role, guild }) {
   }
 
   try {
-    // Verificamos que el bot tenga permisos para gestionar roles
-    const botMember = guild.members.me; // Cambio de guild.me a guild.members.me
+    const botMember = guild.members.me;
     if (!botMember.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
       throw new Error('No tengo permisos para gestionar roles.');
     }
 
-    // Verificamos si el bot no puede asignar el rol debido a la jerarquía
     if (botMember.roles.highest.position <= roleToAdd.position) {
       throw new Error('Mi rol es más bajo que el rol que intento asignar.');
     }
 
-    // Asignamos el rol
     await member.roles.add(roleToAdd);
     return `Rol ${roleToAdd.name} asignado correctamente al usuario ${member.user.tag}.`;
   } catch (error) {

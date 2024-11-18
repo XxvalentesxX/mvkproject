@@ -1,6 +1,6 @@
 const loadCommands = require('./functions/handlers/loadCommands');
 const { sendMessage } = require("./functions/miscelaneos/sendMessage");
-const banUser = require("./functions/moderation/ban");
+const banUser = require("./functions/moderation/banUser");
 const { jsonClear, jsonExists, jsonSet, jsonParse, jsonPretty, jsonStringify, jsonUnset, json } = require("./functions/utils/jsonFunctions");
 const loadEvents = require('./functions/handlers/loadEvents');
 const checkContains = require('./functions/utils/checkContains');

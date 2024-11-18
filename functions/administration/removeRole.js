@@ -13,7 +13,6 @@ async function removeRole({ user, role, guild }) {
   }
 
   try {
-    // Obtenemos al bot como miembro del servidor
     const botMember = guild.members.me;
 
     if (!botMember.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
