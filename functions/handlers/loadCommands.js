@@ -39,7 +39,7 @@ function loadCommands(folderPath, client) {
   loadFromDir(absolutePath);
 
   client.on('messageCreate', async (message) => {
-    const prefix = client.prefix.toLowerCase(); // Convertir prefijo a minúsculas
+    const prefix = client.prefix.toLowerCase();
     if (!message.content.toLowerCase().startsWith(prefix) || message.author.bot) return;
 
     try {
