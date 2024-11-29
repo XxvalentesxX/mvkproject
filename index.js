@@ -23,6 +23,7 @@ const removeRole = require('./functions/administration/removeRole');
 const changeNick = require('./functions/moderation/changeNick');
 const addReactions = require('./functions/miscelaneos/addReactions');
 const unbanUser = require('./functions/moderation/unbanUser');
+const setPresence = require('./functions/setPresence');
 
 module.exports = {
     loadCommands,
@@ -71,5 +72,6 @@ module.exports = {
     removeRole,
     changeNick,
     addReactions,
-    unbanUser
+    unbanUser,
+    setPresence
 };
