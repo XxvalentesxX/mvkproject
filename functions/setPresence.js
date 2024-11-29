@@ -6,10 +6,10 @@ const activityTypes = {
   watching: ActivityType.Watching,
   streaming: ActivityType.Streaming,
   custom: ActivityType.Custom,
-  compiting: ActivityType.Competing,
+  competing: ActivityType.Competing,
 };
 
-function setPresence(client, activities, interval = 5000) {
+async function setPresence(client, { activities, time = 5000 }) {
   if (!activities || activities.length === 0) {
     console.error('No activities provided for setPresence.');
     return;
@@ -18,20 +18,31 @@ function setPresence(client, activities, interval = 5000) {
   let currentIndex = 0;
   let lastActivity = null;
 
-  const updatePresence = () => {
+  const updatePresence = async () => {
     const activity = activities[currentIndex];
 
-    if (!activity || !activity.name) {
+    if (!activity || !activity.name || !activity.type) {
       console.error('Activity is not properly formatted:', activity);
       return;
     }
 
-    let activityType = activity.type ? activity.type.toLowerCase() : 'playing';
-    activityType = activityTypes[activityType] || ActivityType.Playing;
+    const validStatuses = ['idle', 'dnd', 'online', 'offline'];
+    if (!validStatuses.includes(activity.status)) {
+      console.error('Invalid status:', activity.status);
+      return;
+    }
+
+    const validTypes = Object.keys(activityTypes);
+    if (!validTypes.includes(activity.type)) {
+      console.error('Invalid activity type:', activity.type);
+      return;
+    }
+
+    let activityType = activityTypes[activity.type];
 
     if (lastActivity && lastActivity.name === activity.name && lastActivity.type === activityType) {
       console.log('Activity is the same, forcing update...');
-      client.user.setPresence({
+      await client.user.setPresence({
         activities: [{
           name: activity.name,
           type: activityType,
@@ -45,7 +56,7 @@ function setPresence(client, activities, interval = 5000) {
     }
 
     try {
-      client.user.setPresence({
+      await client.user.setPresence({
         activities: [{
           name: activity.name,
           type: activityType,
@@ -59,12 +70,11 @@ function setPresence(client, activities, interval = 5000) {
     }
 
     lastActivity = activity;
-
     currentIndex = (currentIndex + 1) % activities.length;
   };
 
-  updatePresence();
-  setInterval(updatePresence, interval);
+  await updatePresence();
+  setInterval(updatePresence, time);
 }
 
 module.exports = setPresence;
