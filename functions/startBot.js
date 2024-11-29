@@ -25,7 +25,7 @@ function startBot({ token, prefix, intents }) {
   client.prefix = prefix;
 
   client.login(token)
-    .then(() => console.log('Bot logged in successfully!'))
+    .then(() => console.log(`Bot ${client.user.tag} logged in successfully!`))
     .catch(err => console.error('Error logging in:', err));
 
   return client;
