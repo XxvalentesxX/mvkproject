@@ -39,10 +39,11 @@ function loadCommands(folderPath, client) {
   loadFromDir(absolutePath);
 
   client.on('messageCreate', async (message) => {
-    if (!message.content.toLowerCase().startsWith(client.prefix.toLowerCase()) || message.author.bot) return;
+    const prefix = client.prefix.toLowerCase();
+    if (!message.content.toLowerCase().startsWith(prefix) || message.author.bot) return;
 
     try {
-      await handleCommand(message);
+      await handleCommand(message, prefix);
     } catch (error) {
       console.error('Error handling command:', error);
     }
@@ -52,7 +53,7 @@ function loadCommands(folderPath, client) {
 }
 
 function showCommandsStatus() {
-  const maxCommandLength = Math.max(...[...commandsStatus.keys()].map(cmd => cmd.length)); 
+  const maxCommandLength = Math.max(...[...commandsStatus.keys()].map(cmd => cmd.length));
 
   const header = 'Commands';
   const separator = '-'.repeat(maxCommandLength + 3);

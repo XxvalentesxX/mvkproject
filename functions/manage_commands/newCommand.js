@@ -7,17 +7,14 @@ function newCommand({ name, aliases = [], code }) {
     return;
   }
 
-  commands.set(name, { code });
-
+  commands.set(name.toLowerCase(), { code });
   aliases.forEach(alias => {
-    commands.set(alias, { code });
+    commands.set(alias.toLowerCase(), { code });
   });
 }
 
-async function handleCommand(message) {
-  if (!message.content.startsWith(message.client.prefix)) return;
-
-  const args = message.content.slice(message.client.prefix.length).trim().split(/ +/);
+async function handleCommand(message, prefix) {
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
 
   const command = commands.get(commandName);
