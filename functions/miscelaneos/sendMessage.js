@@ -1,8 +1,9 @@
-async function sendMessage({ content, embeds = [], ephemeral = false, channel, replyTo = null }) {
+async function sendMessage({ content, embeds = [], ephemeral = false, channel, components = [], replyTo = null }) {
   try {
     const messageOptions = {
       content,
       embeds,
+      components,
       ephemeral
     };
 
@@ -14,7 +15,7 @@ async function sendMessage({ content, embeds = [], ephemeral = false, channel, r
     const sentMessage = await channel.send(messageOptions);
     return sentMessage.id;
   } catch (error) {
-    console.error('Error al enviar el mensaje:', error);
+    console.error('Error sending message:', error);
   }
 }
 
