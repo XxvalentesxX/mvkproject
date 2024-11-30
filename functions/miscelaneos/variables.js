@@ -1,105 +1,144 @@
 const fs = require('fs');
 const path = require('path');
 
-const basePath = path.join(__dirname, '..', '..', '..', '..', 'variables');
+const BASE_DIR = path.join('./', 'variables');
 
-function ensureDirectoryExistence(filePath) {
-  const dirname = path.dirname(filePath);
-  if (!fs.existsSync(dirname)) {
-    fs.mkdirSync(dirname, { recursive: true });
-  }
+class Var {
+    static Type = {
+        User: 0,
+        Server: 15,
+        Channel: 20,
+        Value: 99
+    };
+
+    static initializeDirectories() {
+        const subdirs = ['user', 'server', 'channel'];
+        if (!fs.existsSync(BASE_DIR)) {
+            fs.mkdirSync(BASE_DIR);
+        }
+        subdirs.forEach(subdir => {
+            const dirPath = path.join(BASE_DIR, subdir);
+            if (!fs.existsSync(dirPath)) {
+                fs.mkdirSync(dirPath);
+            }
+        });
+    }
+
+    static Create({ name, value }) {
+        Var.initializeDirectories();
+
+        const dirs = ['user', 'server', 'channel'];
+        dirs.forEach(dir => {
+            const dirPath = path.join(BASE_DIR, dir);
+            const filePath = path.join(dirPath, `${name}.json`);
+            if (!fs.existsSync(filePath)) {
+                const content = { value };
+                fs.writeFileSync(filePath, JSON.stringify(content, null, 4));
+            }
+        });
+    }
+
+    static Exists({ name }) {
+        Var.initializeDirectories();
+
+        const dirs = ['user', 'server', 'channel'];
+        return dirs.some(dir => {
+            const filePath = path.join(BASE_DIR, dir, `${name}.json`);
+            return fs.existsSync(filePath);
+        });
+    }
+
+    static Get({ name, type, id }) {
+        Var.initializeDirectories();
+
+        const dir = Var.getDirectoryFromType(type);
+        const filePath = path.join(BASE_DIR, dir, `${name}.json`);
+        if (!fs.existsSync(filePath)) {
+            console.error('Variable does not exist.');
+            return null;
+        }
+
+        const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        if (type === Var.Type.Value) return data.value;
+
+        if (!data[`${dir}ID`] || !data[`${dir}ID`][id]) {
+            return data.value;
+        }
+        return data[`${dir}ID`][id];
+    }
+
+    static Set({ name, value, type, id }) {
+        Var.initializeDirectories();
+
+        if (![Var.Type.User, Var.Type.Server, Var.Type.Channel, Var.Type.Value].includes(type)) {
+            console.error('Invalid type.');
+            return;
+        }
+
+        const dir = Var.getDirectoryFromType(type);
+        const filePath = path.join(BASE_DIR, dir, `${name}.json`);
+        if (!fs.existsSync(filePath)) {
+            console.error('Variable does not exist.');
+            return;
+        }
+
+        const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        if (type === Var.Type.Value) {
+            data.value = value;
+        } else {
+            if (!id) {
+                console.error('ID is required for User, Server, or Channel types.');
+                return;
+            }
+            data[`${dir}ID`] = data[`${dir}ID`] || {};
+            data[`${dir}ID`][id] = value;
+        }
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 4));
+    }
+
+    static Reset({ name, type, id }) {
+        Var.initializeDirectories();
+
+        const dir = Var.getDirectoryFromType(type);
+        const filePath = path.join(BASE_DIR, dir, `${name}.json`);
+        if (!fs.existsSync(filePath)) {
+            console.error('Variable does not exist.');
+            return;
+        }
+
+        const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        if (!id || type === Var.Type.Value) return;
+        if (data[`${dir}ID`] && data[`${dir}ID`][id]) {
+            delete data[`${dir}ID`][id];
+        }
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 4));
+    }
+
+    static Delete({ name }) {
+        Var.initializeDirectories();
+
+        const dirs = ['user', 'server', 'channel'];
+        dirs.forEach(dir => {
+            const filePath = path.join(BASE_DIR, dir, `${name}.json`);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        });
+    }
+
+    static getDirectoryFromType(type) {
+        switch (type) {
+            case Var.Type.User:
+                return 'user';
+            case Var.Type.Server:
+                return 'server';
+            case Var.Type.Channel:
+                return 'channel';
+            default:
+                console.error('Invalid type.');
+                return null;
+        }
+    }
 }
 
-function loadVarFile(type, name) {
-  const filePath = path.join(basePath, type, `${name}.json`);
-  if (!fs.existsSync(filePath)) {
-    return {};
-  }
-  const rawData = fs.readFileSync(filePath, 'utf8');
-  return JSON.parse(rawData);
-}
-
-function saveVarFile(type, name, data) {
-  const filePath = path.join(basePath, type, `${name}.json`);
-  ensureDirectoryExistence(filePath);
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
-}
-
-function variableCreate({ name, type }) {
-  if (!['global_user', 'user', 'server', 'channel'].includes(type)) {
-    throw new Error('Invalid type. Valid types are: global_user, user, server, channel.');
-  }
-
-  const filePath = path.join(basePath, type, `${name}.json`);
-  if (!fs.existsSync(filePath)) {
-    const initialData = {};
-    saveVarFile(type, name, initialData);
-    return `Variable ${name} of type ${type} created.`;
-  }
-  return `Variable ${name} of type ${type} already exists.`;
-}
-
-function varExists({ name, type }) {
-  const filePath = path.join(basePath, type, `${name}.json`);
-  return fs.existsSync(filePath);
-}
-
-function setChannelVar({ name, value, channelID, serverID }) {
-  const data = loadVarFile('channel', name);
-  if (!data[serverID]) {
-    data[serverID] = {};
-  }
-  data[serverID][channelID] = { value };
-  saveVarFile('channel', name, data);
-}
-
-function getChannelVar({ name, channelID, serverID }) {
-  const data = loadVarFile('channel', name);
-  return data[serverID] && data[serverID][channelID] ? data[serverID][channelID].value : undefined;
-}
-
-function setServerVar({ name, value, serverID }) {
-  const data = loadVarFile('server', name);
-  data[serverID] = { value };
-  saveVarFile('server', name, data);
-}
-
-function getServerVar({ name, serverID }) {
-  const data = loadVarFile('server', name);
-  return data[serverID] ? data[serverID].value : undefined;
-}
-
-function setUserVar({ name, value, userID }) {
-  const data = loadVarFile('user', name);
-  data[userID] = { value };
-  saveVarFile('user', name, data);
-}
-
-function getUserVar({ name, userID }) {
-  const data = loadVarFile('user', name);
-  return data[userID] ? data[userID].value : undefined;
-}
-
-function setVar({ name, value, userID }) {
-  const data = loadVarFile('global_user', name);
-  data[userID] = { value };
-  saveVarFile('global_user', name, data);
-}
-
-function getVar({ name, userID }) {
-  const data = loadVarFile('global_user', name);
-  return data[userID] ? data[userID].value : undefined;
-}
-
-module.exports = {
-  variableCreate,
-  varExists,
-  setVar,
-  setUserVar,
-  setServerVar,
-  setChannelVar,
-  getVar,
-  getUserVar,
-  getServerVar,
-  getChannelVar
-};
+module.exports = Var;
