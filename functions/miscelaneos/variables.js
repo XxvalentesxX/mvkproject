@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE_DIR = path.join('./', 'variables');
+const BASE_DIR = path.join('..', '..', '..', '..', 'variables');
 
 class Var {
     static Type = {
