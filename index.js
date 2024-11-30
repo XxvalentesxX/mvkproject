@@ -11,7 +11,6 @@ const { newCommand } = require('./functions/manage_commands/newCommand');
 const loadSlashs = require("./functions/handlers/loadSlashs");
 const { subCommand, newSlashCommand, slashOption } = require("./functions/manage_commands/slashCommands");
 const embedCreate = require('./functions/utils/embedCreate');
-const { setServerVar, getServerVar, setChannelVar, getChannelVar, setUserVar, getUserVar, setVar, getVar, varExists, variableCreate } = require("./functions/miscelaneos/variables");
 const timeoutUser = require("./functions/moderation/timeout");
 const { addButtonInteraction, createButton } = require("./functions/components/buttons");
 const { splitText, textSplit, getTextSplitLength } = require("./functions/utils/splits");
@@ -24,6 +23,7 @@ const changeNick = require('./functions/moderation/changeNick');
 const addReactions = require('./functions/miscelaneos/addReactions');
 const unbanUser = require('./functions/moderation/unbanUser');
 const setPresence = require('./functions/setPresence');
+const Var = require('./functions/miscelaneos/variables');
 
 module.exports = {
     loadCommands,
@@ -47,16 +47,6 @@ module.exports = {
     loadSlashs,
     subCommand,
     newSlashCommand,
-    setServerVar,
-    getServerVar,
-    setChannelVar,
-    getChannelVar,
-    setUserVar,
-    getUserVar,
-    setVar,
-    getVar,
-    varExists,
-    variableCreate,
     newCommand,
     timeoutUser,
     createButton,
@@ -73,5 +63,6 @@ module.exports = {
     changeNick,
     addReactions,
     unbanUser,
-    setPresence
+    setPresence,
+    Var
 };
