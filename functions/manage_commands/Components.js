@@ -51,7 +51,7 @@ class Component {
   
         const optionData = {
           label,
-          value: `${menu}-${id}`,
+          value: `${id}`,
           description: description || null,
           emoji: emoji || null,
           default: isDefault || false,
