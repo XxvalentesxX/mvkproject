@@ -175,6 +175,30 @@ class Load {
       }
     });
   }
+
+  static async All(input, client) {
+    const defaultPaths = {
+      events: './src/events',
+      commands: './src/commands',
+      interactions: './src/interactions',
+      slashs: './src/slashs',
+    };
+
+    const paths = typeof input === 'string' ? defaultPaths : { ...defaultPaths, ...input };
+
+    Object.keys(paths).forEach((key) => {
+      const folderPath = paths[key];
+      if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath, { recursive: true });
+        console.log(`Created folder for ${key} at: ${folderPath}`);
+      }
+    });
+
+    if (paths.events) await this.Events(paths.events, client);
+    if (paths.commands) await this.Commands(paths.commands, client);
+    if (paths.interactions) await this.Interactions(paths.interactions, client);
+    if (paths.slashs) await this.Slashs(paths.slashs, client);
+  }
 }
 
 function showCommandsStatus() {
