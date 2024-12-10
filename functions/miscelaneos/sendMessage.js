@@ -8,8 +8,15 @@ async function sendMessage({ content, embeds = [], ephemeral = false, channel, c
 
     if (interaction) {
       if (ephemeral) messageOptions.ephemeral = true;
-      const replyMessage = await interaction.reply({ ...messageOptions, fetchReply: !ephemeral });
-      return replyMessage.id;
+
+      if (!interaction.replied) {
+        const replyMessage = await interaction.reply({ ...messageOptions, fetchReply: !ephemeral });
+        return replyMessage.id;
+      } else {
+        console.log('La interacción ya ha sido respondida');
+        const followUpMessage = await interaction.followUp({ ...messageOptions, fetchReply: !ephemeral });
+        return followUpMessage.id;
+      }
     }
 
     if (replyTo) {
