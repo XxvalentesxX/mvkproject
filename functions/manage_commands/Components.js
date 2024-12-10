@@ -235,7 +235,6 @@ class Component {
       components.push(...buttonRows);
     }
 
-    // Clear all data after returning components
     this.menus.clear();
     this.options.clear();
     this.buttons = [];
