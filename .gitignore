@@ -1,11 +1,5 @@
 node_modules/
-test/
-event/
-commands/
-asd.js
 as.js
-slash/
-antilinks.js
 variables/
-events/
 src/
+test.js
