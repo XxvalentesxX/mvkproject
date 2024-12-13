@@ -1,4 +1,4 @@
-const { getClient } = require('../startBot');
+const { getClient } = require('../../client/startBot');
 
 async function createChannel({ guild, type, name, parent, topic = null, nsfw = false }) {
     try {
