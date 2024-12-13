@@ -3,11 +3,10 @@ const removeRole = require("./admin/roles/Remove");
 const addRole = require("./admin/roles/Add");
 const addReactions = require("./message/Reactions");
 const setPresence = require("./client/setPresence");
-const { startBot } = require("./client/startBot");
-const changeNick = require("./mod/changeNick");
-const banUser = require("./mod/banUser");
-const unbanUser = require("./mod/unbanUser");
-const timeoutUser = require("./mod/timeout");
+const changeNick = require("./mod/User/Nick");
+const banUser = require("./mod/User/Ban");
+const unbanUser = require("./mod/User/Unban");
+const timeoutUser = require("./mod/User/Timeout");
 const loop = require("./misc/loop");
 
 module.exports = {
