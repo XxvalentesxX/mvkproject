@@ -10,6 +10,7 @@ const timeoutUser = require("./mod/User/Timeout");
 const loop = require("./misc/loop");
 const { checkUserPerms } = require("./permissions/User/Check");
 const { textSplit, splitText, getTextSplitLength } = require("./message/Split");
+const checkContains = require("./message/checkContains");
 
 module.exports = {
     Add: {
@@ -42,6 +43,9 @@ module.exports = {
             SetText: textSplit,
             GetText: splitText,
             Length: getTextSplitLength
+        },
+        Check: {
+            Contains: checkContains
         }
     }
 }
