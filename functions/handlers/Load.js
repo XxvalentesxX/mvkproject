@@ -1,220 +1,235 @@
-const { Collection } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const { newCommand, handleCommand } = require('../manage_commands/newCommand');
-const commandsStatus = new Map();
+const chalk = require('chalk');
+const Table = require('cli-table3');
+const Commands = require('./Commands');
+const Events = require('./Events');
+const Interactions = require('./Interactions');
+const Slashs = require('./Slashs');
 
 class Load {
-  static async Interactions(directory, client) {
-    const dirPath = path.resolve(directory);
-
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-      fs.mkdirSync(path.join(dirPath, 'buttons'), { recursive: true });
-      fs.mkdirSync(path.join(dirPath, 'menus'), { recursive: true });
+    static createTable() {
+        return new Table({
+            head: [
+                chalk.bold.white('Name'),
+                chalk.bold.white('Type'),
+                chalk.bold.white('Status')
+            ],
+            colWidths: [15, 15, 15],
+            style: {
+                head: ['bold'],
+                border: ['brightWhite'],
+                compact: false,
+                'padding-left': 1,
+                'padding-right': 1
+            },
+            chars: {
+                top: '─',
+                'top-mid': '┬',
+                'top-left': '╭',
+                'top-right': '╮',
+                bottom: '─',
+                'bottom-mid': '┴',
+                'bottom-left': '╰',
+                'bottom-right': '╯',
+                left: '│',
+                'left-mid': '│',
+                right: '│',
+                'right-mid': '│',
+                middle: '│'
+            }
+        });
     }
 
-    const loadFiles = (subDir) => {
-      const files = fs.readdirSync(subDir).filter((file) => file.endsWith('.js'));
-      files.forEach((file) => {
-        const filePath = path.join(subDir, file);
-        const interaction = require(filePath);
-
-        if (interaction && typeof interaction.code === 'function') {
-          client.on('interactionCreate', async (interactionInstance) => {
-            if (interactionInstance.customId === interaction.id) {
-              await interaction.code(interactionInstance);
-            }
-          });
+    static ensureDirectories(baseDir, subDirs = []) {
+        if (!fs.existsSync(baseDir)) {
+            fs.mkdirSync(baseDir, { recursive: true });
+            console.log(chalk.green(`Created base directory: ${baseDir}`));
         }
-      });
-    };
 
-    ['buttons', 'menus'].forEach((subFolder) => {
-      const subDir = path.join(dirPath, subFolder);
-      if (fs.existsSync(subDir)) {
-        loadFiles(subDir);
-      }
-    });
-  }
-
-  static async Commands(directory, client) {
-    const absolutePath = path.resolve(directory);
-
-    function loadFromDir(dir) {
-      if (!fs.existsSync(dir)) {
-        console.error(`The directory ${dir} does not exist.`);
-        return;
-      }
-
-      const files = fs.readdirSync(dir);
-
-      files.forEach(file => {
-        const filePath = path.join(dir, file);
-        const stat = fs.statSync(filePath);
-
-        if (stat.isDirectory()) {
-          loadFromDir(filePath);
-        } else if (file.endsWith('.js')) {
-          try {
-            const command = require(filePath);
-
-            if (command && typeof command === 'object' && command.name) {
-              commandsStatus.set(command.name, { enabled: true });
-              newCommand(command);
+        subDirs.forEach(dir => {
+            const fullPath = path.join(baseDir, dir);
+            if (!fs.existsSync(fullPath)) {
+                fs.mkdirSync(fullPath, { recursive: true });
+                console.log(chalk.green(`Created directory: ${fullPath}`));
             }
-          } catch (error) {
-            console.error(`Error loading file ${filePath}:`, error);
-          }
-        }
-      });
+        });
     }
 
-    loadFromDir(absolutePath);
+    static ensurePingCommand(directory) {
+        const pingFilePath = path.join(directory, 'ping.js');
 
-    client.on('messageCreate', async (message) => {
-      const prefix = client.prefix.toLowerCase();
-      if (!message.content.toLowerCase().startsWith(prefix) || message.author.bot) return;
+        if (!fs.existsSync(pingFilePath)) {
+            const clientFile = path.relative(directory, require.main.filename);
+            const pingCommandContent = `const client = require('${clientFile}');
 
-      try {
-        await handleCommand(message, prefix);
-      } catch (error) {
-        console.error('Error handling command:', error);
-      }
-    });
-
-    showCommandsStatus();
-  }
-
-  static async Events(directory, client) {
-    const absolutePath = path.resolve(directory);
-
-    function loadFromDir(dir) {
-      const files = fs.readdirSync(dir);
-
-      files.forEach(file => {
-        const filePath = path.join(dir, file);
-        const stat = fs.statSync(filePath);
-
-        if (stat.isDirectory()) {
-          loadFromDir(filePath);
-        } else if (file.endsWith('.js')) {
-          try {
-            const eventModule = require(filePath);
-
-            if (typeof eventModule === 'function') {
-              eventModule(client);
-            }
-          } catch (error) {
-            console.error(`Error loading event from ${filePath}:`, error);
-          }
+module.exports = {
+    name: 'ping',
+    async code(message) {
+        message.reply('Pong! (aqui el ping)ms');
+    }
+};
+`;
+            fs.writeFileSync(pingFilePath, pingCommandContent);
+            console.log(chalk.green(`Created default command: ${pingFilePath}`));
         }
-      });
     }
 
-    loadFromDir(absolutePath);
-  }
+    static ensureClientExported() {
+        const clientPath = require.main.filename;
 
-  static async Slashs(folderPath, client) {
-    client.slashCommands = new Collection();
-    const absolutePath = path.resolve(folderPath);
+        if (fs.existsSync(clientPath)) {
+            const clientContent = fs.readFileSync(clientPath, 'utf-8');
 
-    function loadFromDir(dir) {
-      if (!fs.existsSync(dir)) {
-        console.error(`Directory ${dir} does not exist.`);
-        return;
-      }
-
-      const files = fs.readdirSync(dir);
-
-      files.forEach(file => {
-        const filePath = path.join(dir, file);
-        const stat = fs.statSync(filePath);
-
-        if (stat.isDirectory()) {
-          loadFromDir(filePath);
-        } else if (file.endsWith('.js')) {
-          try {
-            const command = require(filePath);
-
-            if (command.data && command.execute) {
-              client.slashCommands.set(command.data.name, command);
-              console.log(`Slash command loaded: ${command.data.name}`);
+            if (!clientContent.includes('module.exports = client;')) {
+                fs.appendFileSync(clientPath, '\nmodule.exports = client;\n');
+                console.log(chalk.green(`Added client export to ${clientPath}`));
             }
-          } catch (error) {
-            console.error(`Error loading file ${filePath}:`, error);
-          }
         }
-      });
     }
 
-    loadFromDir(absolutePath);
+    static async Commands(directory, client) {
+        this.ensureDirectories(directory);
+        this.ensurePingCommand(directory);
+        this.ensureClientExported();
 
-    client.once('ready', async () => {
-      const commands = client.slashCommands.map(cmd => cmd.data);
-      try {
-        await client.application.commands.set(commands);
-        console.log('Slash commands successfully registered.');
-      } catch (error) {
-        console.error('Error registering slash commands:', error);
-      }
-    });
+        const table = this.createTable();
+        const results = await Commands(directory, client);
 
-    client.on('interactionCreate', async interaction => {
-      if (!interaction.isCommand()) return;
+        results.loaded.forEach(item => {
+            table.push([
+                chalk.white(item),
+                chalk.bold.gray('Command'),
+                chalk.bold.green('✓ Success')
+            ]);
+        });
 
-      const { commandName } = interaction;
-      const command = client.slashCommands.get(commandName);
-      if (command) {
-        try {
-          await command.execute(interaction);
-        } catch (error) {
-          console.error(`Error handling interaction for slash command ${commandName}:`, error);
-          await interaction.reply({ content: 'There was an error executing the command.', ephemeral: true });
+        results.errors.forEach(error => {
+            table.push([
+                chalk.white(error.file || 'Unknown'),
+                chalk.bold.gray('Command'),
+                chalk.bold.red(`✘ ${error.error}`)
+            ]);
+        });
+
+        console.log(chalk.bold.blue('Commands Loaded:'));
+        console.log(table.toString());
+    }
+
+    static async Events(directory, client) {
+        this.ensureDirectories(directory);
+        const table = this.createTable();
+        const results = await Events(directory, client);
+
+        results.loaded.forEach(item => {
+            table.push([
+                chalk.white(item),
+                chalk.bold.gray('Event'),
+                chalk.bold.green('✓ Success')
+            ]);
+        });
+
+        results.errors.forEach(error => {
+            table.push([
+                chalk.white(error.file || 'Unknown'),
+                chalk.bold.gray('Event'),
+                chalk.bold.red(`✘ ${error.error}`)
+            ]);
+        });
+
+        console.log(chalk.bold.blue('Events Loaded:'));
+        console.log(table.toString());
+    }
+
+    static async Interactions(directory, client) {
+        this.ensureDirectories(directory, ['buttons', 'menus']);
+        const table = this.createTable();
+        const results = await Interactions(directory, client);
+
+        results.loaded.forEach(item => {
+            table.push([
+                chalk.white(item),
+                chalk.bold.gray('Interaction'),
+                chalk.bold.green('✓ Success')
+            ]);
+        });
+
+        results.errors.forEach(error => {
+            table.push([
+                chalk.white(error.file || 'Unknown'),
+                chalk.bold.gray('Interaction'),
+                chalk.bold.red(`✘ ${error.error}`)
+            ]);
+        });
+
+        console.log(chalk.bold.blue('Interactions Loaded:'));
+        console.log(table.toString());
+    }
+
+    static async Slashs(directory, client) {
+        this.ensureDirectories(directory);
+        const table = this.createTable();
+        const results = await Slashs(directory, client);
+
+        results.loaded.forEach(item => {
+            table.push([
+                chalk.white(item),
+                chalk.bold.gray('Slash Command'),
+                chalk.bold.green('✓ Success')
+            ]);
+        });
+
+        results.errors.forEach(error => {
+            table.push([
+                chalk.white(error.file || 'Unknown'),
+                chalk.bold.gray('Slash Command'),
+                chalk.bold.red(`✘ ${error.error}`)
+            ]);
+        });
+
+        console.log(chalk.bold.blue('Slash Commands Loaded:'));
+        console.log(table.toString());
+    }
+
+    static async All(directory, client) {
+        this.ensureDirectories(directory, ['commands', 'events', 'slashs', 'interactions/buttons', 'interactions/menus']);
+        this.ensurePingCommand(path.join(directory, 'commands'));
+        this.ensureClientExported();
+
+        const table = this.createTable();
+
+        console.log(chalk.bold.blue('Starting full load process...'));
+
+        const loaders = [
+            { type: 'Command', method: Commands },
+            { type: 'Event', method: Events },
+            { type: 'Interaction', method: Interactions },
+            { type: 'Slash Command', method: Slashs }
+        ];
+
+        for (const loader of loaders) {
+            const results = await loader.method(directory, client);
+
+            results.loaded.forEach(item => {
+                table.push([
+                    chalk.white(item),
+                    chalk.bold.gray(loader.type),
+                    chalk.bold.green('✓ Success')
+                ]);
+            });
+
+            results.errors.forEach(error => {
+                table.push([
+                    chalk.white(error.file || 'Unknown'),
+                    chalk.bold.gray(loader.type),
+                    chalk.bold.red(`✘ ${error.error}`)
+                ]);
+            });
         }
-      }
-    });
-  }
 
-  static async All(input, client) {
-    const defaultPaths = {
-      events: './src/events',
-      commands: './src/commands',
-      interactions: './src/interactions',
-      slashs: './src/slashs',
-    };
-
-    const paths = typeof input === 'string' ? defaultPaths : { ...defaultPaths, ...input };
-
-    Object.keys(paths).forEach((key) => {
-      const folderPath = paths[key];
-      if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath, { recursive: true });
-        console.log(`Created folder for ${key} at: ${folderPath}`);
-      }
-    });
-
-    if (paths.events) await this.Events(paths.events, client);
-    if (paths.commands) await this.Commands(paths.commands, client);
-    if (paths.interactions) await this.Interactions(paths.interactions, client);
-    if (paths.slashs) await this.Slashs(paths.slashs, client);
-  }
-}
-
-function showCommandsStatus() {
-  const maxCommandLength = Math.max(...[...commandsStatus.keys()].map(cmd => cmd.length));
-
-  const header = 'Commands';
-  const separator = '-'.repeat(maxCommandLength + 3);
-
-  console.log(header.padEnd(maxCommandLength + 3) + '| Status');
-  console.log(separator);
-
-  commandsStatus.forEach((status, commandName) => {
-    const symbol = status.enabled ? '✅' : '❌';
-    const commandNameFormatted = commandName.padEnd(maxCommandLength);
-    console.log(`${commandNameFormatted} | ${symbol}`);
-  });
+        console.log(table.toString());
+        console.log(chalk.bold.green('All components loaded successfully.'));
+    }
 }
 
 module.exports = Load;
