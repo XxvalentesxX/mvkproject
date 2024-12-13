@@ -8,6 +8,8 @@ const banUser = require("./mod/User/Ban");
 const unbanUser = require("./mod/User/Unban");
 const timeoutUser = require("./mod/User/Timeout");
 const loop = require("./misc/loop");
+const { checkUserPerms } = require("./permissions/User/Check");
+const { textSplit, splitText, getTextSplitLength } = require("./message/Split");
 
 module.exports = {
     Add: {
@@ -29,7 +31,17 @@ module.exports = {
         Ban: banUser,
         Unban: unbanUser,
         Timeout: timeoutUser,
-        SetNick: changeNick
+        SetNick: changeNick,
+        Check: {
+            Permissions: checkUserPerms
+        }
     },
-    Loop: loop
+    Loop: loop,
+    Message: {
+        Split: {
+            SetText: textSplit,
+            GetText: splitText,
+            Length: getTextSplitLength
+        }
+    }
 }
