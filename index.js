@@ -1,6 +1,5 @@
 const { sendMessage } = require("./functions/message/Message");
 const checkContains = require('./functions/message/checkContains');
-const { checkUserPerms } = require('./functions/permissions/checkPermissions');
 const { subCommand, newSlashCommand, slashOption } = require("./functions/handlers/add-ons/SetSlashCommand");
 const embedCreate = require('./functions/message/Embed');
 const { splitText, textSplit, getTextSplitLength } = require("./functions/message/Split");
@@ -16,7 +15,6 @@ module.exports = {
     sendMessage,
     embedCreate,
     checkContains,
-    checkUserPerms,
     subCommand,
     newSlashCommand,
     splitText,
