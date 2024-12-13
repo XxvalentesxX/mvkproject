@@ -20,8 +20,9 @@ const addReactions = require('./functions/miscelaneos/addReactions');
 const unbanUser = require('./functions/moderation/unbanUser');
 const setPresence = require('./functions/setPresence');
 const Var = require('./functions/miscelaneos/variables');
-const Component = require('./functions/manage_commands/Components');
 const Load = require('./functions/handlers/Load');
+const { Buttons } = require("./functions/manage_commands/Components/Buttons");
+const { Menus } = require("./functions/manage_commands/Components/Menus");
 
 module.exports = {
     sendMessage,
@@ -58,6 +59,7 @@ module.exports = {
     unbanUser,
     setPresence,
     Var,
-    Component,
-    Load
+    Load,
+    Buttons,
+    Menus
 };
