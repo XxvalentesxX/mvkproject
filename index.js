@@ -1,45 +1,34 @@
-const { sendMessage } = require("./functions/miscelaneos/sendMessage");
-const banUser = require("./functions/moderation/banUser");
-const { jsonClear, jsonExists, jsonSet, jsonParse, jsonPretty, jsonStringify, jsonUnset, json } = require("./functions/utils/jsonFunctions");
-const checkContains = require('./functions/utils/checkContains');
-const { checkUserPerms } = require('./functions/utils/checkPermissions');
-const { getMessageContent, stop }= require('./functions/utils/stopAndMessage');
-const loop = require('./functions/utils/loop');
-const { newCommand } = require('./functions/manage_commands/newCommand');
-const { subCommand, newSlashCommand, slashOption } = require("./functions/manage_commands/slashCommands");
-const embedCreate = require('./functions/utils/embedCreate');
-const timeoutUser = require("./functions/moderation/timeout");
-const { splitText, textSplit, getTextSplitLength } = require("./functions/utils/splits");
-const { newEvent } = require("./functions/manage_commands/newEvents");
-const { createChannel } = require("./functions/administration/createChannel");
-const { startBot } = require('./functions/startBot');
-const addRole = require('./functions/administration/addRole');
-const removeRole = require('./functions/administration/removeRole');
-const changeNick = require('./functions/moderation/changeNick');
-const addReactions = require('./functions/miscelaneos/addReactions');
-const unbanUser = require('./functions/moderation/unbanUser');
-const setPresence = require('./functions/setPresence');
-const Var = require('./functions/miscelaneos/variables');
-const Load = require('./functions/handlers/Load');
-const { Buttons } = require("./functions/manage_commands/Components/Buttons");
-const { Menus } = require("./functions/manage_commands/Components/Menus");
+const { sendMessage } = require("./functions/message/Message");
+const banUser = require("./functions/mod/banUser");
+const checkContains = require('./functions/message/checkContains');
+const { checkUserPerms } = require('./functions/permissions/checkPermissions');
+const loop = require('./functions/misc/loop');
+const { newCommand } = require('./functions/handlers/add-ons/SetCommand');
+const { subCommand, newSlashCommand, slashOption } = require("./functions/handlers/add-ons/SetSlashCommand");
+const embedCreate = require('./functions/message/Embed');
+const timeoutUser = require("./functions/mod/timeout");
+const { splitText, textSplit, getTextSplitLength } = require("./functions/message/Split");
+const { newEvent } = require("./functions/handlers/add-ons/SetEvent");
+const { createChannel } = require("./functions/admin/createChannel");
+const { startBot } = require('./functions/client/startBot');
+const addRole = require('./functions/admin/Role');
+const removeRole = require('./functions/admin/removeRole');
+const changeNick = require('./functions/mod/changeNick');
+const addReactions = require('./functions/message/Reactions');
+const unbanUser = require('./functions/mod/unbanUser');
+const setPresence = require('./functions/client/setPresence');
+
+const Var = require('./functions/misc/variables');
+const Load = require('./functions/handlers/loader/Load');
+const { Buttons } = require("./functions/message/Components/Buttons");
+const { Menus } = require("./functions/message/Components/Menus");
 
 module.exports = {
     sendMessage,
     embedCreate,
     banUser,
-    jsonClear,
-    jsonExists,
-    jsonSet,
-    jsonParse,
-    jsonPretty,
-    jsonStringify,
-    jsonUnset,
-    json,
     checkContains,
     checkUserPerms,
-    getMessageContent,
-    stop,
     loop,
     subCommand,
     newSlashCommand,
