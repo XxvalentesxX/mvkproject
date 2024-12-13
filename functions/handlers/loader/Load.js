@@ -66,7 +66,7 @@ class Load {
 module.exports = {
     name: 'ping',
     async code(message) {
-        message.reply('Pong! (aqui el ping)ms');
+        message.reply(\`Pong! \${client.ws.ping}ms\`);
     }
 };
 `;
