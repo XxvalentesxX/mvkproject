@@ -3,19 +3,19 @@ const { getClient } = require('../../client/startBot');
 async function changeNick({ guild, user, nick }) {
   try {
     const client = getClient();
-    if (!client) throw new Error('Cliente no disponible');
+    if (!client) return console.error('Client not available');
 
     const targetGuild = client.guilds.cache.get(guild);
-    if (!targetGuild) throw new Error('Guild no encontrada');
+    if (!targetGuild) return console.error('Guild not found');
 
     const member = await targetGuild.members.fetch(user).catch(() => null);
-    if (!member) throw new Error('Miembro no encontrado');
+    if (!member) return console.error('Member not found');
 
     await member.setNickname(nick);
 
-    console.log(`El apodo de ${member.user.tag} ha sido cambiado a: ${nick}`);
+    console.log(`The nickname of ${member.user.tag} has been changed to: ${nick}`);
   } catch (error) {
-    console.error('Error al intentar cambiar el nickname:', error.message);
+    console.error('Error while trying to change the nickname:', error.message);
   }
 }
 
