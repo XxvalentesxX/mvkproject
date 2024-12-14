@@ -3,28 +3,27 @@ const { getClient } = require('../../client/startBot');
 async function unbanUser({ guild, user }) {
     const client = getClient();
     if (!guild || !user) {
-      throw new Error('Se requieren los parámetros "guild" e "user".');
+        return console.error('The parameters "guild" and "user" are required.');
     }
-  
+
     try {
-      const targetGuild = await client.guilds.fetch(guild);
-      if (!targetGuild) {
-        throw new Error(`No se encontró el servidor con el ID "${guild}".`);
-      }
-  
-      const banList = await targetGuild.bans.fetch();
-      const isBanned = banList.has(user);
-      if (!isBanned) {
-        return `El usuario con ID ${user} no está baneado en el servidor.`;
-      }
-  
-      await targetGuild.bans.remove(user);
-      return `El usuario con ID ${user} ha sido desbaneado correctamente.`;
+        const targetGuild = await client.guilds.fetch(guild);
+        if (!targetGuild) {
+            return console.error(`No server found with the ID "${guild}".`);
+        }
+
+        const banList = await targetGuild.bans.fetch();
+        const isBanned = banList.has(user);
+        if (!isBanned) {
+            return `User with ID ${user} is not banned in the server.`;
+        }
+
+        await targetGuild.bans.remove(user);
+        return `User with ID ${user} has been successfully unbanned.`;
     } catch (error) {
-      console.error(`Error al intentar desbanear al usuario: ${error.message}`);
-      throw new Error('No se pudo desbanear al usuario. Verifica los parámetros y permisos.');
+        console.error(`Error while trying to unban the user: ${error.message}`);
+        return console.error('Could not unban the user. Please check the parameters and permissions.');
     }
-  }
-  
-  module.exports = unbanUser;
-  
+}
+
+module.exports = unbanUser;
