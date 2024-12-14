@@ -18,18 +18,16 @@ async function Events(directory, client) {
       const stat = fs.statSync(filePath);
 
       if (stat.isDirectory()) {
-        loadFromDir(filePath); // Recursión si encontramos subdirectorios
+        loadFromDir(filePath);
       } else if (file.endsWith('.js')) {
         try {
-          // Asegurémonos de que el archivo exporte correctamente el evento con `type` y `code`
           const eventModule = require(filePath);
 
           if (eventModule && typeof eventModule.code === 'function') {
-            // Usamos `newEvent` para registrar el evento
             newEvent(eventModule)(client);
             results.loaded.push(file);
           } else {
-            throw new Error(`Evento no válido en ${filePath}`);
+            return console.error(`Invalid event in ${filePath}`);
           }
         } catch (error) {
           console.error(`Error loading event from ${filePath}:`, error);
