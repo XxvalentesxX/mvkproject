@@ -3,29 +3,29 @@ const { getClient } = require('../../client/startBot');
 async function banUser({ guild, user, duration, reason }) {
   try {
     const client = getClient();
-    if (!client) throw new Error('Cliente no disponible');
+    if (!client) return console.error('Client not available');
 
     const targetGuild = client.guilds.cache.get(guild);
-    if (!targetGuild) throw new Error('Guild no encontrada');
+    if (!targetGuild) return console.error('Guild not found');
 
     const member = await targetGuild.members.fetch(user).catch(() => null);
-    if (!member) throw new Error('Miembro no encontrado');
+    if (!member) return console.error('Member not found');
 
-    if (!member.bannable) throw new Error('No se puede banear a este miembro');
+    if (!member.bannable) return console.error('Cannot ban this member');
 
     await member.ban({ reason });
 
     if (duration) {
       setTimeout(async () => {
         try {
-          await targetGuild.bans.remove(user, 'Duración de ban completada');
+          await targetGuild.bans.remove(user, 'Ban duration completed');
         } catch (error) {
-          console.error(`Error al intentar desbanear al usuario ${member.user.tag}:`, error.message);
+          console.error(`Error while trying to unban user ${member.user.tag}:`, error.message);
         }
       }, duration * 24 * 60 * 60 * 1000);
     }
   } catch (error) {
-    console.error('Error al intentar banear al usuario:', error.message);
+    console.error('Error while trying to ban the user:', error.message);
   }
 }
 
