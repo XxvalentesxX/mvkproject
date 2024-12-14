@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { newEvent } = require('../../add-ons/SetEvent');
 
 async function Events(directory, client) {
   const absolutePath = path.resolve(directory);
@@ -17,14 +18,18 @@ async function Events(directory, client) {
       const stat = fs.statSync(filePath);
 
       if (stat.isDirectory()) {
-        loadFromDir(filePath);
+        loadFromDir(filePath); // Recursión si encontramos subdirectorios
       } else if (file.endsWith('.js')) {
         try {
+          // Asegurémonos de que el archivo exporte correctamente el evento con `type` y `code`
           const eventModule = require(filePath);
 
-          if (typeof eventModule === 'function') {
-            eventModule(client);
+          if (eventModule && typeof eventModule.code === 'function') {
+            // Usamos `newEvent` para registrar el evento
+            newEvent(eventModule)(client);
             results.loaded.push(file);
+          } else {
+            throw new Error(`Evento no válido en ${filePath}`);
           }
         } catch (error) {
           console.error(`Error loading event from ${filePath}:`, error);
