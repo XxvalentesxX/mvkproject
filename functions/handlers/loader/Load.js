@@ -8,6 +8,13 @@ const Interactions = require('./parts/Interactions');
 const Slashs = require('./parts/Slashs');
 
 class Load {
+    static statusData = {
+        loaded: [],
+        errors: []
+    };
+
+    static configs = []; // Variable para almacenar la información de los comandos, eventos, interacciones, etc.
+
     static createTable() {
         return new Table({
             head: [
@@ -56,179 +63,137 @@ class Load {
         });
     }
 
-    static ensurePingCommand(directory) {
-        const pingFilePath = path.join(directory, 'ping.js');
-
-        if (!fs.existsSync(pingFilePath)) {
-            const clientFile = path.relative(directory, require.main.filename);
-            const pingCommandContent = `const client = require('${clientFile}');
-
-module.exports = {
-    name: 'ping',
-    async code(message) {
-        message.reply(\`Pong! \${client.ws.ping}ms\`);
-    }
-};
-`;
-            fs.writeFileSync(pingFilePath, pingCommandContent);
-            console.log(chalk.green(`Created default command: ${pingFilePath}`));
-        }
-    }
-
-    static ensureClientExported() {
-        const clientPath = require.main.filename;
-
-        if (fs.existsSync(clientPath)) {
-            const clientContent = fs.readFileSync(clientPath, 'utf-8');
-
-            if (!clientContent.includes('module.exports = client;')) {
-                fs.appendFileSync(clientPath, '\nmodule.exports = client;\n');
-                console.log(chalk.green(`Added client export to ${clientPath}`));
-            }
-        }
-    }
-
     static async Commands(directory, client) {
-        this.ensureDirectories(directory);
-        this.ensurePingCommand(directory);
-        this.ensureClientExported();
-
-        const table = this.createTable();
         const results = await Commands(directory, client);
 
         results.loaded.forEach(item => {
-            table.push([
-                chalk.white(item),
-                chalk.bold.gray('Command'),
-                chalk.bold.green('✓ Success')
-            ]);
+            const commandName = path.basename(item, '.js');
+            Load.configs.push({ name: commandName, type: 'Command', status: '✓ Success' });
+            Load.statusData.loaded.push({ name: commandName, type: 'Command' });
         });
 
         results.errors.forEach(error => {
-            table.push([
-                chalk.white(error.file || 'Unknown'),
-                chalk.bold.gray('Command'),
-                chalk.bold.red(`✘ ${error.error}`)
-            ]);
+            const commandName = error.file ? path.basename(error.file, '.js') : 'Unknown';
+            Load.configs.push({
+                name: commandName,
+                type: 'Command',
+                status: `✘ ${error.error}`
+            });
+            Load.statusData.errors.push({
+                name: commandName,
+                type: 'Command',
+                error: error.error
+            });
         });
-
-        console.log(chalk.bold.blue('Commands Loaded:'));
-        console.log(table.toString());
     }
 
     static async Events(directory, client) {
-        this.ensureDirectories(directory);
-        const table = this.createTable();
         const results = await Events(directory, client);
 
         results.loaded.forEach(item => {
-            table.push([
-                chalk.white(item),
-                chalk.bold.gray('Event'),
-                chalk.bold.green('✓ Success')
-            ]);
+            const eventName = path.basename(item, '.js');
+            Load.configs.push({ name: eventName, type: 'Event', status: '✓ Success' });
+            Load.statusData.loaded.push({ name: eventName, type: 'Event' });
         });
 
         results.errors.forEach(error => {
-            table.push([
-                chalk.white(error.file || 'Unknown'),
-                chalk.bold.gray('Event'),
-                chalk.bold.red(`✘ ${error.error}`)
-            ]);
+            const eventName = error.file ? path.basename(error.file, '.js') : 'Unknown';
+            Load.configs.push({
+                name: eventName,
+                type: 'Event',
+                status: `✘ ${error.error}`
+            });
+            Load.statusData.errors.push({
+                name: eventName,
+                type: 'Event',
+                error: error.error
+            });
         });
-
-        console.log(chalk.bold.blue('Events Loaded:'));
-        console.log(table.toString());
     }
 
     static async Interactions(directory, client) {
-        this.ensureDirectories(directory, ['buttons', 'menus']);
-        const table = this.createTable();
         const results = await Interactions(directory, client);
 
         results.loaded.forEach(item => {
-            table.push([
-                chalk.white(item),
-                chalk.bold.gray('Interaction'),
-                chalk.bold.green('✓ Success')
-            ]);
+            const fileName = typeof item === 'string' ? item : item.file;
+            const fileType = fileName.includes('buttons') ? 'Interaction/Button' : 'Interaction/Menu';
+            const interactionName = path.basename(fileName, '.js');
+
+            Load.configs.push({ name: interactionName, type: fileType, status: '✓ Success' });
+            Load.statusData.loaded.push({ name: interactionName, type: fileType });
         });
 
         results.errors.forEach(error => {
-            table.push([
-                chalk.white(error.file || 'Unknown'),
-                chalk.bold.gray('Interaction'),
-                chalk.bold.red(`✘ ${error.error}`)
-            ]);
+            const interactionName = error.file ? path.basename(error.file, '.js') : 'Unknown';
+            Load.configs.push({
+                name: interactionName,
+                type: 'Interaction',
+                status: `✘ ${error.error}`
+            });
+            Load.statusData.errors.push({
+                name: interactionName,
+                type: 'Interaction',
+                error: error.error
+            });
         });
-
-        console.log(chalk.bold.blue('Interactions Loaded:'));
-        console.log(table.toString());
     }
 
     static async Slashs(directory, client) {
-        this.ensureDirectories(directory);
-        const table = this.createTable();
         const results = await Slashs(directory, client);
 
         results.loaded.forEach(item => {
+            const slashCommandName = path.basename(item, '.js');
+            Load.configs.push({ name: slashCommandName, type: 'Slash Command', status: '✓ Success' });
+            Load.statusData.loaded.push({ name: slashCommandName, type: 'Slash Command' });
+        });
+
+        results.errors.forEach(error => {
+            const slashCommandName = error.file ? path.basename(error.file, '.js') : 'Unknown';
+            Load.configs.push({
+                name: slashCommandName,
+                type: 'Slash Command',
+                status: `✘ ${error.error}`
+            });
+            Load.statusData.errors.push({
+                name: slashCommandName,
+                type: 'Slash Command',
+                error: error.error
+            });
+        });
+    }
+
+    static async All(directory, client) {
+        Load.ensureDirectories(directory, ['commands', 'events', 'slashs', 'interactions/buttons', 'interactions/menus']);
+
+        await Promise.all([
+            Load.Commands(directory, client),
+            Load.Events(directory, client),
+            Load.Interactions(directory, client),
+            Load.Slashs(directory, client)
+        ]);
+    }
+
+    static Status() {
+        const table = Load.createTable();
+
+        Load.statusData.loaded.forEach(item => {
             table.push([
-                chalk.white(item),
-                chalk.bold.gray('Slash Command'),
+                chalk.white(item.name),
+                chalk.bold.gray(item.type),
                 chalk.bold.green('✓ Success')
             ]);
         });
 
-        results.errors.forEach(error => {
+        Load.statusData.errors.forEach(error => {
             table.push([
-                chalk.white(error.file || 'Unknown'),
-                chalk.bold.gray('Slash Command'),
+                chalk.white(error.name),
+                chalk.bold.gray(error.type),
                 chalk.bold.red(`✘ ${error.error}`)
             ]);
         });
 
-        console.log(chalk.bold.blue('Slash Commands Loaded:'));
         console.log(table.toString());
-    }
-
-    static async All(directory, client) {
-        this.ensureDirectories(directory, ['commands', 'events', 'slashs', 'interactions/buttons', 'interactions/menus']);
-        this.ensurePingCommand(path.join(directory, 'commands'));
-        this.ensureClientExported();
-
-        const table = this.createTable();
-
-        console.log(chalk.bold.blue('Starting full load process...'));
-
-        const loaders = [
-            { type: 'Command', method: Commands },
-            { type: 'Event', method: Events },
-            { type: 'Interaction', method: Interactions },
-            { type: 'Slash Command', method: Slashs }
-        ];
-
-        for (const loader of loaders) {
-            const results = await loader.method(directory, client);
-
-            results.loaded.forEach(item => {
-                table.push([
-                    chalk.white(item),
-                    chalk.bold.gray(loader.type),
-                    chalk.bold.green('✓ Success')
-                ]);
-            });
-
-            results.errors.forEach(error => {
-                table.push([
-                    chalk.white(error.file || 'Unknown'),
-                    chalk.bold.gray(loader.type),
-                    chalk.bold.red(`✘ ${error.error}`)
-                ]);
-            });
-        }
-
-        console.log(table.toString());
-        console.log(chalk.bold.green('All components loaded successfully.'));
+        console.log(chalk.bold.green('✓ Todo ha sido cargado correctamente.'));
     }
 }
 
