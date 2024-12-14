@@ -4,29 +4,29 @@ async function addRole({ user, role, guild }) {
   const member = await guild.members.fetch(user);
   
   if (!member) {
-    throw new Error('Miembro no encontrado.');
+    return console.error('Member not found.');
   }
 
   const roleToAdd = guild.roles.cache.get(role);
   if (!roleToAdd) {
-    throw new Error('Rol no encontrado.');
+    return console.error('Role not found.');
   }
 
   try {
     const botMember = guild.members.me;
     if (!botMember.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-      throw new Error('No tengo permisos para gestionar roles.');
+      return console.error('I do not have permission to manage roles.');
     }
 
     if (botMember.roles.highest.position <= roleToAdd.position) {
-      throw new Error('Mi rol es más bajo que el rol que intento asignar.');
+      return console.error('My role is lower than the role I am trying to assign.');
     }
 
     await member.roles.add(roleToAdd);
-    return `Rol ${roleToAdd.name} asignado correctamente al usuario ${member.user.tag}.`;
+    return `Role ${roleToAdd.name} successfully assigned to user ${member.user.tag}.`;
   } catch (error) {
     console.error(error);
-    throw new Error('Hubo un error al intentar asignar el rol.');
+    return console.error('An error occurred while trying to assign the role.');
   }
 }
 
