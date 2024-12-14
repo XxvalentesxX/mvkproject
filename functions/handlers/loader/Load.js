@@ -13,7 +13,7 @@ class Load {
         errors: []
     };
 
-    static configs = []; // Variable para almacenar la información de los comandos, eventos, interacciones, etc.
+    static configs = [];
 
     static createTable() {
         return new Table({
