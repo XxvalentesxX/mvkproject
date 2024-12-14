@@ -1,8 +1,8 @@
-let textParts = []; // Array para almacenar las partes del texto dividido
+let textParts = [];
 
 function textSplit({ text, separator }) {
   if (typeof text !== 'string' || typeof separator !== 'string') {
-    throw new Error('Both text and separator must be strings.');
+    return console.error('Both text and separator must be strings.');
   }
 
   textParts = text.split(separator);
@@ -10,7 +10,7 @@ function textSplit({ text, separator }) {
 
 function splitText(index) {
   if (typeof index !== 'number' || index < 0 || index >= textParts.length) {
-    throw new Error('Index is out of bounds.');
+    return console.error('Index is out of bounds.');
   }
 
   return textParts[index];
