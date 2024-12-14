@@ -65,25 +65,26 @@ const events = {
     userUpdate: 'userUpdate',
     voiceStateUpdate: 'voiceStateUpdate',
     warn: 'warn',
-    webhookUpdate: 'webhookUpdate'    
-};
-
-function newEvent({ type, action }) {
+    webhookUpdate: 'webhookUpdate'
+  };
+  
+  function newEvent({ type, action }) {
     const eventType = events[type];
-
+  
     if (!eventType) {
-        throw new Error(`Invalid event type: ${type}`);
+      throw new Error(`Invalid event type: ${type}`);
     }
-
+  
     return (client) => {
-        client.on(eventType, async (...args) => {
-            try {
-                await action(...args);
-            } catch (error) {
-                console.error(`Error in ${eventType} event handler:`, error);
-            }
-        });
+      client.on(eventType, async (...args) => {
+        try {
+          await action.code(...args);
+        } catch (error) {
+          console.error(`Error in ${eventType} event handler:`, error);
+        }
+      });
     };
-}
-
-module.exports = { newEvent, events };
+  }
+  
+  module.exports = { newEvent, events };
+  
