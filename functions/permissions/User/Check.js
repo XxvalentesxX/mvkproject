@@ -46,26 +46,26 @@ const PERMISSIONS_MAP = {
 
 async function checkUserPerms({ user, permissions, guildId }) {
     if (!user || !permissions || !guildId) {
-        throw new Error('Missing required parameters: user, permissions, or guildId.');
+        return console.error('Missing required parameters: user, permissions, or guildId.');
     }
 
     try {
         const client = getClient();
-        if (!client) throw new Error("Client not found.");
+        if (!client) return console.error('Client not found.');
 
         const guildObj = client.guilds.cache.get(guildId);
-        if (!guildObj) throw new Error("Guild not found.");
+        if (!guildObj) return console.error('Guild not found.');
 
         const member = await guildObj.members.fetch(user);
 
         if (!member) {
-            throw new Error("The user was not found.");
+            return console.error('The user was not found.');
         }
 
         const hasPermissions = permissions.every(permission => {
             const permissionKey = PERMISSIONS_MAP[permission.toUpperCase()];
             if (!permissionKey) {
-                throw new Error(`Invalid permission: ${permission}`);
+                return console.error(`Invalid permission: ${permission}`);
             }
             return member.permissions.has(PermissionsBitField.Flags[permissionKey]);
         });
