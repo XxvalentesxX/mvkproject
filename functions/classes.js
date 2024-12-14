@@ -11,6 +11,9 @@ const loop = require("./misc/loop");
 const { checkUserPerms } = require("./permissions/User/Check");
 const { textSplit, splitText, getTextSplitLength } = require("./message/Split");
 const checkContains = require("./message/checkContains");
+const { EditButton } = require("./message/Components/Buttons/Edit");
+const { RemoveButton } = require("./message/Components/Buttons/Remove");
+const { Buttons } = require("./message/Components/Buttons/Set");
 
 module.exports = {
     Add: {
@@ -47,5 +50,9 @@ module.exports = {
         Check: {
             Contains: checkContains
         }
+    },
+    Buttons: {
+        Build: Buttons,
+        Edit: EditButton.Edit
     }
 }
