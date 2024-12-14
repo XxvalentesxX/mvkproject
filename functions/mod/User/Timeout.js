@@ -4,17 +4,17 @@ async function timeoutUser({ userId, guildId, time, reason }) {
     try {
         const client = getClient();
         if (!client) {
-            throw new Error('Discord client is not initialized.');
+            return console.error('Discord client is not initialized.');
         }
 
         const guild = client.guilds.cache.get(guildId);
         if (!guild) {
-            throw new Error('Unable to find the specified server.');
+            return console.error('Unable to find the specified server.');
         }
 
         const member = await guild.members.fetch(userId).catch(() => null);
         if (!member) {
-            throw new Error('The specified user was not found.');
+            return console.error('The specified user was not found.');
         }
 
         const durationMs = parseTime(time);
@@ -34,7 +34,7 @@ function parseTime(time) {
         case 'm': return duration * 60 * 1000;
         case 'h': return duration * 60 * 60 * 1000;
         case 'd': return duration * 24 * 60 * 60 * 1000;
-        default: throw new Error('Invalid time unit.');
+        default: return console.error('Invalid time unit.');
     }
 }
 
