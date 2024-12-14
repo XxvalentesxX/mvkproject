@@ -4,30 +4,30 @@ async function removeRole({ user, role, guild }) {
   const member = await guild.members.fetch(user);
 
   if (!member) {
-    throw new Error('Miembro no encontrado.');
+    return console.error('Member not found.');
   }
 
   const roleToRemove = guild.roles.cache.get(role);
   if (!roleToRemove) {
-    throw new Error('Rol no encontrado.');
+    return console.error('Role not found.');
   }
 
   try {
     const botMember = guild.members.me;
 
     if (!botMember.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-      throw new Error('No tengo permisos para gestionar roles.');
+      return console.error('I do not have permission to manage roles.');
     }
 
     if (botMember.roles.highest.position <= roleToRemove.position) {
-      throw new Error('Mi rol es más bajo que el rol que intento quitar.');
+      return console.error('My role is lower than the role I am trying to remove.');
     }
 
     await member.roles.remove(roleToRemove);
-    return `Rol ${roleToRemove.name} quitado correctamente al usuario ${member.user.tag}.`;
+    return `Role ${roleToRemove.name} successfully removed from user ${member.user.tag}.`;
   } catch (error) {
     console.error(error);
-    throw new Error('Hubo un error al intentar quitar el rol.');
+    return console.error('An error occurred while trying to remove the role.');
   }
 }
 
