@@ -164,14 +164,15 @@ class Load {
 
     static async All(directory, client) {
         Load.ensureDirectories(directory, ['commands', 'events', 'slashs', 'interactions/buttons', 'interactions/menus']);
-
+    
         await Promise.all([
-            Load.Commands(directory, client),
-            Load.Events(directory, client),
-            Load.Interactions(directory, client),
-            Load.Slashs(directory, client)
+            Load.Commands(path.join(directory, 'commands'), client),
+            Load.Events(path.join(directory, 'events'), client),
+            Load.Interactions(path.join(directory, 'interactions'), client),
+            Load.Slashs(path.join(directory, 'slashs'), client)
         ]);
     }
+    
 
     static Status() {
         const table = Load.createTable();
