@@ -24,19 +24,23 @@ function startBot({ token, prefix, intents }) {
 
   client.prefix = prefix;
 
+  client.once('ready', () => {
+    console.log(`Bot ${client.user.tag} is ready!`);
+  });
+
   client.login(token)
-    .then(() => console.log(`Bot ${client.user.tag} logged in successfully!`))
     .catch(err => console.error('Error logging in:', err));
 
   return client;
 }
 
 function getClient() {
-  if (!client) {
-    console.log('Client started successfully. You can now use getClient();.');
+  if (!client || !client.isReady()) {
+    console.error("Client is not initialized or ready.");
     return null;
   }
   return client;
 }
+
 
 module.exports = { startBot, getClient };
