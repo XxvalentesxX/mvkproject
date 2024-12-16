@@ -3,10 +3,10 @@ const removeRole = require("./admin/roles/Remove");
 const addRole = require("./admin/roles/Add");
 const addReactions = require("./message/Reactions");
 const setPresence = require("./client/setPresence");
-const changeNick = require("./mod/User/Nick");
-const banUser = require("./mod/User/Ban");
-const unbanUser = require("./mod/User/Unban");
-const timeoutUser = require("./mod/User/Timeout");
+const changeNick = require("./User/Moderation/ChangeNick");
+const banUser = require("./User/Moderation/Ban");
+const unbanUser = require("./User/Moderation/Unban");
+const timeoutUser = require("./User/Moderation/Timeout");
 const loop = require("./misc/loop");
 const { checkUserPerms } = require("./permissions/User/Check");
 const { textSplit, splitText, getTextSplitLength } = require("./message/Split");
@@ -14,6 +14,7 @@ const checkContains = require("./message/checkContains");
 const { EditButton } = require("./message/Components/Buttons/Edit");
 const { RemoveButton } = require("./message/Components/Buttons/Remove");
 const { Buttons } = require("./message/Components/Buttons/Set");
+const userinfo = require("./user/info");
 
 module.exports = {
     Add: {
@@ -38,7 +39,8 @@ module.exports = {
         SetNick: changeNick,
         Check: {
             Permissions: checkUserPerms
-        }
+        },
+        Info: userinfo
     },
     Loop: loop,
     Message: {
