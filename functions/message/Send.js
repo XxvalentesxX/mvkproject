@@ -11,21 +11,21 @@ async function sendMessage({ content, embeds = [], ephemeral = false, channel, c
 
       if (!interaction.replied) {
         const replyMessage = await interaction.reply({ ...messageOptions, fetchReply: !ephemeral });
-        return replyMessage.id;
+        return replyMessage;
       } else {
         console.log('La interacción ya ha sido respondida');
         const followUpMessage = await interaction.followUp({ ...messageOptions, fetchReply: !ephemeral });
-        return followUpMessage.id;
+        return followUpMessage;
       }
     }
 
     if (replyTo) {
       const replyMessage = await replyTo.reply(messageOptions);
-      return replyMessage.id;
+      return replyMessage;
     }
 
     const sentMessage = await channel.send(messageOptions);
-    return sentMessage.id;
+    return sentMessage;
   } catch (error) {
     console.error('Error sending message:', error);
   }
