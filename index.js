@@ -1,4 +1,4 @@
-const { sendMessage } = require("./functions/message/Message");
+const { sendMessage } = require("./functions/message/Send");
 const checkContains = require('./functions/message/checkContains');
 const { startBot } = require('./functions/client/startBot');
 
