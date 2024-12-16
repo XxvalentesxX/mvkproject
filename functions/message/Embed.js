@@ -22,6 +22,11 @@ class Embed {
       hasValidContent = true;
     }
 
+    if (options.thumbnail) {
+      embed.setThumbnail(options.thumbnail);
+      hasValidContent = true;
+    }
+
     if (options.color) {
       embed.setColor(options.color);
     }
