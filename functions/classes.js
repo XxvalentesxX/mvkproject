@@ -47,7 +47,7 @@ module.exports = {
         Split: {
             SetText: textSplit,
             GetText: splitText,
-            Length: getTextSplitLength
+            GetLength: getTextSplitLength
         },
         Check: {
             Contains: checkContains
